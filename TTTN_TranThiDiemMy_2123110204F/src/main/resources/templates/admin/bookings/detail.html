@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card">
+        <h3 th:text="'Mã: ' + ${booking.bookingCode}"></h3>
+        <p><strong>Khách hàng:</strong> <span th:text="${booking.customer.fullName}"></span> (<span th:text="${booking.customer.email}"></span>)</p>
+        <p><strong>Phòng:</strong> <span th:text="${booking.room.roomType} + ' - ' + ${booking.room.hotel.name}"></span></p>
+        <p><strong>Ngày nhận:</strong> <span th:text="${#temporals.format(booking.checkInDate, 'dd/MM/yyyy')}"></span></p>
+        <p><strong>Ngày trả:</strong> <span th:text="${#temporals.format(booking.checkOutDate, 'dd/MM/yyyy')}"></span></p>
+        <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(booking.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span></p>
+        <p><strong>Trạng thái:</strong> <span th:text="${booking.status}"></span></p>
+        <div class="btn-group" style="margin-top:1rem">
+            <a th:href="@{/admin/bookings}" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

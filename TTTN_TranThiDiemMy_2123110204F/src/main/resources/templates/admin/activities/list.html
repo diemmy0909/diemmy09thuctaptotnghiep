@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="admin/layout :: layout(~{::main})">
+<head>
+    <title>Quản lý Hoạt động du lịch</title>
+</head>
+<body>
+<main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+        <h2 style="margin:0;">Hoạt động du lịch</h2>
+        <a th:href="@{/admin/activities/create}" class="btn btn-primary" style="background:#ef4444;border-color:#ef4444;">+ Thêm hoạt động</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div style="overflow-x:auto;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên hoạt động</th>
+                        <th>Mô tả</th>
+
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="act : ${activities}">
+                        <td th:text="${act.id}">1</td>
+                        <td>
+                            <img th:if="${act.imageUrl}" th:src="${act.imageUrl}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">
+                        </td>
+                        <td th:text="${act.title}">Tên hoạt động</td>
+                        <td><span class="badge" th:text="${act.description}">Mô tả</span></td>
+
+                        <td>
+                            <a th:href="@{/admin/activities/edit/{id}(id=${act.id})}" class="btn btn-sm btn-outline">Sửa</a>
+                            <a th:href="@{/admin/activities/delete/{id}(id=${act.id})}" class="btn btn-sm btn-outline" style="color:#ef4444;border-color:#ef4444" onclick="return confirm('Bạn có chắc muốn xóa hoạt động này?');">Xóa</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${activities.isEmpty()}">
+                        <td colspan="5" style="text-align:center;padding:2rem;">Chưa có hoạt động du lịch nào.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Phân trang Admin -->
+    <div th:if="${totalPages > 1}" style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:2rem;">
+        <!-- Nút Trang trước -->
+        <a th:if="${currentPage > 1}" 
+           th:href="@{/admin/activities(page=${currentPage - 1})}" 
+           style="padding:6px 12px; border:1px solid #cbd5e1; border-radius:4px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; transition:all 0.2s; font-size:0.9rem;"
+           onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+            &larr; Trang trước
+        </a>
+        <span th:if="${currentPage <= 1}" style="padding:6px 12px; border:1px solid #e2e8f0; border-radius:4px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; cursor:not-allowed; font-size:0.9rem;">
+            &larr; Trang trước
+        </span>
+
+        <!-- Số trang -->
+        <div style="font-weight:600; color:#475569; font-size:0.9rem;">
+            Trang <span th:text="${currentPage}" style="color:#0f172a;"></span> / <span th:text="${totalPages}"></span>
+        </div>
+
+        <!-- Nút Trang sau -->
+        <a th:if="${currentPage < totalPages}" 
+           th:href="@{/admin/activities(page=${currentPage + 1})}" 
+           style="padding:6px 12px; border:1px solid #cbd5e1; border-radius:4px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; transition:all 0.2s; font-size:0.9rem;"
+           onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+            Trang sau &rarr;
+        </a>
+        <span th:if="${currentPage >= totalPages}" style="padding:6px 12px; border:1px solid #e2e8f0; border-radius:4px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; cursor:not-allowed; font-size:0.9rem;">
+            Trang sau &rarr;
+        </span>
+    </div>
+</main>
+</body>
+</html>

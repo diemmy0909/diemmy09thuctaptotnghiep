@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Admin Hotel'">Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="admin-wrapper">
+    <aside class="sidebar">
+        <div class="sidebar-brand">🏨 Hotel<span>Admin</span></div>
+        <nav>
+            <a th:href="@{/admin}" th:classappend="${activeMenu == 'dashboard'} ? 'active'">📊 Tổng quan</a>
+            <a th:href="@{/admin/hotels}" th:classappend="${activeMenu == 'hotels'} ? 'active'">🏨 Khách sạn</a>
+            <a th:href="@{/admin/flights}" th:classappend="${activeMenu == 'flights'} ? 'active'">✈️ Chuyến bay</a>
+            <a th:href="@{/admin/activities}" th:classappend="${activeMenu == 'activities'} ? 'active'">🎪 Hoạt động du lịch</a>
+            <a th:href="@{/admin/rooms}" th:classappend="${activeMenu == 'rooms'} ? 'active'">🛏️ Phòng</a>
+            <a th:href="@{/admin/bookings}" th:classappend="${activeMenu == 'bookings'} ? 'active'">📅 Đặt phòng</a>
+            <a th:href="@{/admin/flight-bookings}" th:classappend="${activeMenu == 'flight-bookings'} ? 'active'">🎫 Đặt vé máy bay</a>
+            <a th:href="@{/admin/tickets}" th:classappend="${activeMenu == 'tickets'} ? 'active'">🎟️ Quản lý vé & Tour</a>
+            <a th:href="@{/admin/ticket-bookings}" th:classappend="${activeMenu == 'ticket-bookings'} ? 'active'">🎫 Đơn đặt vé Tour</a>
+            <a th:href="@{/admin/customers}" th:classappend="${activeMenu == 'customers'} ? 'active'">👥 Khách hàng</a>
+            <a th:href="@{/admin/payments}" th:classappend="${activeMenu == 'payments'} ? 'active'">💳 Thanh toán</a>
+            <a th:href="@{/admin/amenities}" th:classappend="${activeMenu == 'amenities'} ? 'active'">✨ Tiện nghi</a>
+
+            <a th:href="@{/admin/promotions}" th:classappend="${activeMenu == 'promotions'} ? 'active'">🎁 Khuyến mãi</a>
+            <a th:href="@{/admin/staff}" th:classappend="${activeMenu == 'staff'} ? 'active'" sec:authorize="hasRole('SUPER_ADMIN')">👤 Nhân viên</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div sec:authentication="name">admin</div>
+            <form th:action="@{/admin/logout}" method="post" style="margin-top:0.5rem">
+                <button type="submit" class="btn btn-secondary btn-sm" style="width:100%">Đăng xuất</button>
+            </form>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <h1 th:text="${pageTitle}">Page</h1>
+        </header>
+        <div class="content">
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+            <div th:replace="${content}">Content</div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

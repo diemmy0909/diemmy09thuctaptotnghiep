@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card" style="padding:0;overflow:hidden">
+        <table>
+            <thead><tr><th>Mã TT</th><th>Booking</th><th>Số tiền</th><th>Phương thức</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="p : ${payments}">
+                <td th:text="${p.paymentCode}"></td>
+                <td th:text="${p.booking.bookingCode}"></td>
+                <td th:text="${#numbers.formatDecimal(p.amount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                <td th:text="${p.method}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${p.status.name() == 'PENDING'} ? 'badge-pending' : (${p.status.name() == 'COMPLETED'} ? 'badge-completed' : 'badge-refunded')"
+                          th:text="${p.status}"></span>
+                </td>
+                <td class="btn-group">
+                    <form th:if="${p.status.name() == 'PENDING'}" th:action="@{/admin/payments/{id}/confirm(id=${p.id})}" method="post" style="display:inline">
+                        <button class="btn btn-success btn-sm">Xác nhận TT</button>
+                    </form>
+                    <form th:if="${p.status.name() == 'COMPLETED'}" th:action="@{/admin/payments/{id}/refund(id=${p.id})}" method="post" style="display:inline" onsubmit="return confirm('Hoàn tiền?')">
+                        <button class="btn btn-danger btn-sm">Hoàn tiền</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

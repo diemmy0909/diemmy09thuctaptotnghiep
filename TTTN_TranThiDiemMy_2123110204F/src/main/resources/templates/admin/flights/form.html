@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="admin/layout :: layout(~{::main})">
+<head>
+    <title th:text="${flight.id == null ? 'Thêm Chuyến bay' : 'Sửa Chuyến bay'}">Form Chuyến bay</title>
+</head>
+<body>
+<main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 th:text="${flight.id == null ? 'Thêm Chuyến bay mới' : 'Cập nhật Chuyến bay'}"></h2>
+        <a th:href="@{/admin/flights}" class="btn btn-outline">Quay lại</a>
+    </div>
+
+    <form th:action="@{${flight.id == null ? '/admin/flights/create' : '/admin/flights/edit/' + flight.id}}" th:object="${flight}" method="post" class="form-page" style="max-width:800px;">
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Hãng hàng không</label>
+                <input type="text" th:field="*{airline}" class="form-control" placeholder="VD: Vietnam Airlines" required>
+            </div>
+            <div class="form-group">
+                <label>Số hiệu chuyến bay</label>
+                <input type="text" th:field="*{flightNumber}" class="form-control" placeholder="VD: VN-234" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Điểm đi</label>
+                <input type="text" th:field="*{departureCity}" class="form-control" placeholder="VD: TP HCM (SGN)" required>
+            </div>
+            <div class="form-group">
+                <label>Điểm đến</label>
+                <input type="text" th:field="*{arrivalCity}" class="form-control" placeholder="VD: Hà Nội (HAN)" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Thời gian khởi hành</label>
+                <input type="datetime-local" th:field="*{departureTime}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Thời gian hạ cánh</label>
+                <input type="datetime-local" th:field="*{arrivalTime}" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Giá vé (VNĐ)</label>
+                <input type="number" th:field="*{price}" class="form-control" placeholder="VD: 1500000" min="0" required>
+            </div>
+            <div class="form-group">
+                <label>Số lượng ghế trống</label>
+                <input type="number" th:field="*{availableSeats}" class="form-control" placeholder="VD: 120" min="0" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:1rem; width:100%;">Lưu chuyến bay</button>
+    </form>
+</main>
+</body>
+</html>

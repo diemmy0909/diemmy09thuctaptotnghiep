@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card" style="padding:0;overflow:hidden">
+        <table>
+            <thead><tr><th>ID</th><th>Họ tên</th><th>Email</th><th>SĐT</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="c : ${customers}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.fullName}"></td>
+                <td th:text="${c.email}"></td>
+                <td th:text="${c.phone}"></td>
+                <td><span th:if="${c.locked}" class="badge badge-cancelled">Đã khóa</span><span th:unless="${c.locked}" class="badge badge-confirmed">Hoạt động</span></td>
+                <td class="btn-group">
+                    <a th:href="@{/admin/customers/{id}(id=${c.id})}" class="btn btn-secondary btn-sm">Lịch sử</a>
+                    <form th:action="@{/admin/customers/{id}/toggle-lock(id=${c.id})}" method="post" style="display:inline">
+                        <button class="btn btn-warning btn-sm" th:text="${c.locked} ? 'Mở khóa' : 'Khóa TK'"></button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

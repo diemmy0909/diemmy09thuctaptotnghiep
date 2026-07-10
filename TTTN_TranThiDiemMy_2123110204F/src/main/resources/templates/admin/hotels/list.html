@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="page-header">
+        <span></span>
+        <a th:href="@{/admin/hotels/new}" class="btn btn-primary">+ Thêm khách sạn</a>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Hình</th><th>Tên</th><th>Địa chỉ</th><th>Số sao</th><th>Tiện nghi</th><th>Thao tác</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="h : ${hotels}">
+                <td th:text="${h.id}"></td>
+                <td><img th:if="${h.imageUrl}" th:src="${h.imageUrl}" class="img-thumb" alt=""></td>
+                <td th:text="${h.name}"></td>
+                <td th:text="${h.address}"></td>
+                <td th:text="${h.starRating} + ' ⭐'"></td>
+                <td>
+                    <span th:each="a, stat : ${h.amenities}" th:text="${a.name} + (${stat.last} ? '' : ', ')"></span>
+                </td>
+                <td class="btn-group">
+                    <a th:href="@{/admin/hotels/{id}(id=${h.id})}" class="btn btn-secondary btn-sm">Chi tiết</a>
+                    <a th:href="@{/admin/hotels/{id}/edit(id=${h.id})}" class="btn btn-primary btn-sm">Sửa</a>
+                    <form th:action="@{/admin/hotels/{id}/delete(id=${h.id})}" method="post" style="display:inline" onsubmit="return confirm('Xóa khách sạn?')">
+                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(hotels)}"><td colspan="7" class="empty-state">Chưa có khách sạn</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Phân trang Admin -->
+    <div th:if="${totalPages > 1}" style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:2rem;">
+        <!-- Nút Trang trước -->
+        <a th:if="${currentPage > 1}" 
+           th:href="@{/admin/hotels(page=${currentPage - 1})}" 
+           style="padding:6px 12px; border:1px solid #cbd5e1; border-radius:4px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; transition:all 0.2s; font-size:0.9rem;"
+           onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+            &larr; Trang trước
+        </a>
+        <span th:if="${currentPage <= 1}" style="padding:6px 12px; border:1px solid #e2e8f0; border-radius:4px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; cursor:not-allowed; font-size:0.9rem;">
+            &larr; Trang trước
+        </span>
+
+        <!-- Số trang -->
+        <div style="font-weight:600; color:#475569; font-size:0.9rem;">
+            Trang <span th:text="${currentPage}" style="color:#0f172a;"></span> / <span th:text="${totalPages}"></span>
+        </div>
+
+        <!-- Nút Trang sau -->
+        <a th:if="${currentPage < totalPages}" 
+           th:href="@{/admin/hotels(page=${currentPage + 1})}" 
+           style="padding:6px 12px; border:1px solid #cbd5e1; border-radius:4px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; transition:all 0.2s; font-size:0.9rem;"
+           onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+            Trang sau &rarr;
+        </a>
+        <span th:if="${currentPage >= totalPages}" style="padding:6px 12px; border:1px solid #e2e8f0; border-radius:4px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; cursor:not-allowed; font-size:0.9rem;">
+            Trang sau &rarr;
+        </span>
+    </div>
+</section>
+</body>
+</html>

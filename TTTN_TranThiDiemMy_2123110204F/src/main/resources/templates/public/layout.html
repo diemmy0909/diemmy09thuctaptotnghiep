@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' - AluminumTravel' : 'AluminumTravel'}">AluminumTravel</title>
+    <link rel="stylesheet" th:href="@{/css/public.css}">
+    <style>
+        .nav-link.active {
+            color: #10b981 !important;
+            font-weight: 700 !important;
+            border-bottom-color: #10b981 !important;
+        }
+        .top-nav-link.active {
+            color: #10b981 !important;
+            font-weight: 700 !important;
+        }
+        .btn-outline.top-nav-link.active {
+            border-color: #10b981 !important;
+            color: #10b981 !important;
+        }
+    </style>
+</head>
+<body>
+<header class="site-header" style="padding:0; border-bottom:1px solid #e2e8f0; background:#fff;">
+    <!-- Top Row -->
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:15px 0 10px 0;">
+        <a th:href="@{/}" class="logo" style="text-decoration:none; font-size:1.8rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:0.5rem; letter-spacing:-0.5px;">
+            <span>&#127976;</span> <span style="color: inherit;">Aluminum<span style="color:#10b981;">Travel</span></span>
+        </a>
+        
+        <!-- Actions -->
+        <div class="header-actions" style="display:flex; align-items:center; gap:1.5rem; font-size:0.95rem; font-weight:600; color:#334155;">
+            
+            <!-- Language & Currency Switchers -->
+            <div style="display:flex; align-items:center; gap:0.5rem; border-right: 1px solid #e2e8f0; padding-right: 1rem;">
+
+                <!-- Currency -->
+                <form th:action="@{/}" method="get" style="margin:0;">
+                    <input type="hidden" name="currency" th:value="${session.currency == 'USD' ? 'VND' : 'USD'}">
+                    <button type="submit" class="btn btn-outline btn-sm" style="display:flex; align-items:center; gap:0.3rem; font-weight: bold; color: #0284c7;">
+                        <span th:text="${session.currency != null ? session.currency : 'VND'}">VND</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-left:0.5rem;">
+                <span sec:authorize="!isAuthenticated()" style="display:flex; gap:0.5rem; align-items: center;">
+                    <a th:href="@{/dang-nhap}" style="background:#e0f2fe; color:#0284c7; padding:0.6rem 1.2rem; border-radius:8px; text-decoration:none; display:flex; align-items:center; gap:0.3rem;">
+                        <span>👤</span> <span th:text="#{nav.login}">Đăng nhập</span>
+                    </a>
+                    <a th:href="@{/dang-ky}" style="background:#0ea5e9; color:white; padding:0.6rem 1.2rem; border-radius:8px; text-decoration:none;" th:text="#{nav.register}">Đăng ký</a>
+                </span>
+
+                <span sec:authorize="isAuthenticated() and !hasAnyRole('SUPER_ADMIN','MANAGER','STAFF')" style="display:flex; gap:0.5rem; align-items: center;">
+                    <a th:href="@{/thong-bao}" class="btn btn-outline btn-sm" style="position:relative; display:flex; align-items:center;">
+                        🔔
+                        <span th:if="${unreadNotificationCount > 0}" th:text="${unreadNotificationCount}" style="position:absolute; top:-5px; right:-5px; background:#ef4444; color:white; font-size:10px; padding:2px 5px; border-radius:10px; font-weight:bold;"></span>
+                    </a>
+                    <a th:href="@{/ho-so}" class="btn btn-outline btn-sm" th:text="#{nav.profile}">Hồ sơ</a>
+                    <a th:href="@{/lich-su-dat-phong}" class="btn btn-outline btn-sm" th:text="#{nav.history}">Lịch sử</a>
+                    <a th:href="@{/yeu-thich}" class="btn btn-outline btn-sm" style="color:#ef4444;border-color:#ef4444" th:text="#{nav.favorites}">Yêu thích ❤️</a>
+                    <form th:action="@{/dang-xuat}" method="post" style="display:flex; margin: 0; padding: 0;">
+                        <button type="submit" class="btn btn-sm" style="background:#64748b;color:#fff; margin:0;" th:text="#{nav.logout}">Đăng xuất</button>
+                    </form>
+                </span>
+
+                <span sec:authorize="hasAnyRole('SUPER_ADMIN','MANAGER','STAFF')" style="display:flex; gap:0.5rem; align-items: center;">
+                    <a th:href="@{/admin}" class="btn btn-outline btn-sm top-nav-link" style="display:flex; align-items: center;">Admin</a>
+                    <form th:action="@{/dang-xuat}" method="post" style="display:flex; margin: 0; padding: 0;">
+                        <button type="submit" class="btn btn-sm" style="background:#64748b;color:#fff; margin:0;" th:text="#{nav.logout}">Đăng xuất</button>
+                    </form>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row (Nav) -->
+    <div class="container" style="padding-bottom:0;">
+        <nav>
+            <ul style="list-style:none; padding:0; margin:0; display:flex; gap:1.5rem; font-size:0.95rem; font-weight:600; color:#64748b; border-bottom: 1px solid #f1f5f9;">
+                <li><a th:href="@{/khach-san}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.hotels}">Khách sạn</a></li>
+                <li><a th:href="@{/chuyen-bay}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.flights}">Chuyến bay</a></li>
+                <li><a th:href="@{/ve-tham-quan}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.tours}">Tour & Vé tham quan</a></li>
+                <li><a th:href="@{/thue-xe}" class="nav-link" th:classappend="${activeMenu == 'car_rentals'} ? 'active' : ''" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.car_rentals}">Thuê xe</a></li>
+                <li><a th:href="@{/hoat-dong-vui-choi}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.activities}">Các Điểm Du Lịch Đáng Trải Nghiệm</a></li>
+                <li><a th:href="@{/khuyen-mai}" class="nav-link" th:classappend="${activeMenu == 'promotions'} ? 'active' : ''" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 0.3rem;">
+                    <span>🎁</span> <span>Khuyến mãi</span>
+                </a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<main>
+    <div th:if="${success}" class="container" style="padding-top:1rem"><div class="alert alert-success" th:text="${success}"></div></div>
+    <div th:if="${error}" class="container" style="padding-top:1rem"><div class="alert alert-error" th:text="${error}"></div></div>
+    <div th:replace="${content}">Content</div>
+</main>
+<!-- Newsletter Banner Section -->
+<section style="background: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; padding: 4rem 0; position: relative; margin-top: 4rem;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6);"></div>
+    <div class="container" style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+        
+        <!-- Mobile App Mockup (Left) -->
+        <div style="flex: 1; min-width: 300px; display: flex; justify-content: center;">
+            <img src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" style="border-radius: 24px; border: 4px solid white; height: 350px; object-fit: cover; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);" alt="App Mockup">
+        </div>
+        
+        <!-- Newsletter Form (Right) -->
+        <div style="flex: 2; min-width: 300px; color: white;">
+            <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);" th:text="#{newsletter.title}">Luôn cập nhật các ưu đãi & mẹo du lịch mới nhất.</h2>
+            
+            <form style="display: flex; gap: 0.5rem; max-width: 500px; margin-bottom: 2rem;">
+                <input type="email" th:placeholder="#{newsletter.placeholder}" style="flex: 1; padding: 12px 16px; border: none; border-radius: 8px; font-size: 1rem;">
+                <button type="button" style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;" th:text="#{newsletter.button}">Đăng ký</button>
+            </form>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.5);" th:text="#{newsletter.subtitle}">Chuyến đi mơ ước trong tầm tay. Tải ứng dụng ngay.</p>
+            <div style="display: flex; gap: 1rem;">
+                <!-- Play Store / App Store placeholders -->
+                <button style="background: black; color: white; border: 1px solid #333; padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <span style="font-size: 1.5rem;">▶️</span>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.6rem; text-transform: uppercase;">Get it on</div>
+                        <div style="font-size: 1rem; font-weight: bold;">Google Play</div>
+                    </div>
+                </button>
+                <button style="background: black; color: white; border: 1px solid #333; padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <span style="font-size: 1.5rem;">🍎</span>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.6rem; text-transform: uppercase;">Download on the</div>
+                        <div style="font-size: 1rem; font-weight: bold;">App Store</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Footer -->
+<footer style="background: #0f172a; color: #94a3b8; padding: 4rem 0 2rem 0; font-size: 0.9rem;">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+            
+            <!-- Column 1: Brand & Partners -->
+            <div>
+                <a href="#" style="text-decoration: none; font-size: 1.8rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 0.5rem; letter-spacing: -0.5px; margin-bottom: 1.5rem;">
+                    <span>&#127976;</span> <span>Aluminum<span style="color:#10b981;">Travel</span></span>
+                </a>
+                
+                <h4 style="color: white; font-weight: 700; margin-bottom: 1rem;" th:text="#{footer.partners}">Đối tác thanh toán</h4>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 2rem;">
+                    <!-- Payment Logos -->
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">VISA</div>
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">Master</div>
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">JCB</div>
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">Amex</div>
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">Momo</div>
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">ZaloPay</div>
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">VNPay</div>
+                    <div style="background: white; border-radius: 4px; padding: 4px; text-align: center; color: #0f172a; font-weight: bold; font-size: 0.7rem;">PayPal</div>
+                </div>
+            </div>
+
+            <!-- Column 2: About -->
+            <div>
+                <h4 style="color: white; font-weight: 700; margin-bottom: 1.5rem; font-size: 1rem;" th:text="#{footer.about}">Về AluminumTravel</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem;">
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.about.booking}">Cách đặt chỗ</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.about.contact}">Liên hệ chúng tôi</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.about.help}">Trợ giúp</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.about.careers}">Tuyển dụng</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.about.us}">Về chúng tôi</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Products -->
+            <div>
+                <h4 style="color: white; font-weight: 700; margin-bottom: 1.5rem; font-size: 1rem;" th:text="#{footer.products}">Sản phẩm</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem;">
+                    <li><a th:href="@{/khach-san}" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.products.hotels}">Khách sạn</a></li>
+                    <li><a th:href="@{/chuyen-bay}" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.products.flights}">Chuyến bay</a></li>
+                    <li><a th:href="@{/thue-xe}" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.products.cars}">Thuê xe</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.products.airport}">Đưa đón sân bay</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.products.activities}">Các Điểm Du Lịch Đáng Trải Nghiệm</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 4: Others & Socials -->
+            <div>
+                <h4 style="color: white; font-weight: 700; margin-bottom: 1.5rem; font-size: 1rem;" th:text="#{footer.others}">Khác</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem;">
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.others.refer}">Giới thiệu bạn bè</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.others.privacy}">Chính sách Quyền riêng tư</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.others.terms}">Điều khoản & Điều kiện</a></li>
+                    <li><a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;" th:text="#{footer.others.rules}">Quy chế hoạt động</a></li>
+                </ul>
+
+                <h4 style="color: white; font-weight: 700; margin-bottom: 1rem; font-size: 1rem;" th:text="#{footer.follow}">Theo dõi chúng tôi</h4>
+                <div style="display: flex; gap: 1rem; font-size: 1.2rem;">
+                    <a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;">📘</a>
+                    <a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;">📷</a>
+                    <a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;">🎵</a>
+                    <a href="#" style="color: inherit; text-decoration: none; transition: color 0.2s;">📺</a>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div style="border-top: 1px solid #1e293b; padding-top: 1.5rem; text-align: center; font-size: 0.8rem;">
+            <p style="margin-bottom: 0.5rem;">Công ty TNHH AluminumTravel Việt Nam. Mã số doanh nghiệp: 0123456789 | Địa chỉ: Tòa nhà AI, Đường Trần Hưng Đạo, Quận 1, TP HCM.</p>
+            <p>Copyright © 2026 AluminumTravel. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Active Nav Link Logic
+        const navLinks = document.querySelectorAll('.nav-link');
+        const topNavLinks = document.querySelectorAll('.top-nav-link');
+        const currentPath = window.location.pathname;
+        
+        function applyActiveClass(links) {
+            links.forEach(link => {
+                if (link.href && !link.href.endsWith('#')) {
+                    const linkPath = new URL(link.href).pathname;
+                    if (currentPath === linkPath || (currentPath.startsWith(linkPath + '/') && linkPath !== '/')) {
+                        link.classList.add('active');
+                    }
+                }
+            });
+        }
+        
+        applyActiveClass(navLinks);
+        applyActiveClass(topNavLinks);
+    });
+</script>
+
+</body>
+</html>

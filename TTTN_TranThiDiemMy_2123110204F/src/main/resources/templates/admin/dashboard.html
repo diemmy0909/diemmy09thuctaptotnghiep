@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="stats-grid">
+        <div class="stat-card"><h3 th:text="${hotelCount}">0</h3><p>Khách sạn</p></div>
+        <div class="stat-card"><h3 th:text="${roomCount}">0</h3><p>Phòng</p></div>
+        <div class="stat-card"><h3 th:text="${bookingCount}">0</h3><p>Đặt phòng</p></div>
+        <div class="stat-card"><h3 th:text="${customerCount}">0</h3><p>Khách hàng</p></div>
+        <div class="stat-card" style="border-color:#d97706"><h3 th:text="${pendingBookings}">0</h3><p>Booking chờ xử lý</p></div>
+        <div class="stat-card" style="border-color:#dc2626"><h3 th:text="${pendingReviews}">0</h3><p>Review chờ duyệt</p></div>
+    </div>
+    
+    <div style="display:flex; gap:1.5rem; margin-top:2rem;">
+        <div class="card" style="flex:2;">
+            <h3 style="margin-top:0">Biểu đồ doanh thu</h3>
+            <div style="height:250px; width:100%;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+        <div class="card" style="flex:1;">
+            <h3 style="margin-top:0">Tổng kết Tài chính</h3>
+            <div style="margin-bottom:1rem;">
+                <p style="color:#64748b; margin-bottom:0.2rem;">Tổng doanh thu (VNĐ)</p>
+                <h2 id="totalRevenueStr" style="margin:0; color:#0f172a;">Đang tải...</h2>
+            </div>
+            <div style="padding:1rem; background:#f8fafc; border-radius:8px;">
+                <p style="color:#64748b; margin-bottom:0.2rem; font-size:0.9rem;" sec:authorize="hasRole('PARTNER')">Chiết khấu sàn (10%)</p>
+                <p style="color:#64748b; margin-bottom:0.2rem; font-size:0.9rem;" sec:authorize="hasRole('SUPER_ADMIN')">Hoa hồng sàn (10%)</p>
+                <h3 id="commissionStr" style="margin:0; color:#10b981;">Đang tải...</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/admin/api/revenue')
+                .then(res => res.json())
+                .then(data => {
+                    // Update text
+                    document.getElementById('totalRevenueStr').innerText = new Intl.NumberFormat('vi-VN').format(data.totalRevenue);
+                    document.getElementById('commissionStr').innerText = new Intl.NumberFormat('vi-VN').format(data.commission);
+
+                    // Draw chart
+                    const ctx = document.getElementById('revenueChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Doanh thu (VNĐ)',
+                                data: data.data,
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return new Intl.NumberFormat('vi-VN').format(value);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(err => console.error('Error fetching revenue data:', err));
+        });
+    </script>
+</section>
+</body>
+</html>

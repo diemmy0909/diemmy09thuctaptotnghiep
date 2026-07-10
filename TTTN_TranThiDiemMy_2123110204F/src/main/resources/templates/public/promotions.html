@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="public/layout :: layout(~{::main})">
+<head>
+    <title>Khuyến Mãi Hấp Dẫn - AluminumTravel</title>
+</head>
+<body>
+<main>
+    <!-- Hero Banner -->
+    <div style="background: linear-gradient(135deg, #10b981, #047857); padding: 5rem 0; position: relative; overflow: hidden; text-align: center; color: white;">
+        <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+        <div class="container" style="position: relative; z-index: 10;">
+            <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Săn Deal Nóng - Vi Vu Đón Hè</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">Tổng hợp tất cả các mã giảm giá, khuyến mãi và ưu đãi độc quyền chỉ có tại AluminumTravel. Nhanh tay kẻo lỡ!</p>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 3rem; margin-bottom: 5rem;">
+        
+        <div th:if="${promotions.isEmpty()}" style="background: white; padding: 4rem; text-align: center; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">😢</div>
+            <h3 style="color: #0f172a; font-size: 1.5rem; font-weight: 700;">Hiện tại chưa có khuyến mãi nào!</h3>
+            <p style="color: #64748b; margin-top: 0.5rem; font-size: 1.1rem;">Bạn vui lòng quay lại sau để săn những mã giảm giá siêu hot nhé.</p>
+        </div>
+
+        <div th:unless="${promotions.isEmpty()}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 2rem;">
+            
+            <div th:each="promo : ${promotions}" style="display: flex; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transition: transform 0.3s; position: relative;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                
+                <!-- Left Ticket Stub -->
+                <div style="background: #10b981; color: white; width: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-right: 2px dashed rgba(255,255,255,0.5); position: relative;">
+                    <!-- Cutouts -->
+                    <div style="position: absolute; top: -10px; right: -10px; width: 20px; height: 20px; background: #f8fafc; border-radius: 50%;"></div>
+                    <div style="position: absolute; bottom: -10px; right: -10px; width: 20px; height: 20px; background: #f8fafc; border-radius: 50%;"></div>
+                    
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎁</div>
+                    <div style="font-size: 1.5rem; font-weight: 900; line-height: 1;" th:if="${promo.discountPercent}" th:text="'-' + ${promo.discountPercent} + '%'"></div>
+                    <div style="font-size: 1.2rem; font-weight: 900; line-height: 1; text-align: center;" th:if="${promo.discountAmount}" th:text="'-' + ${#numbers.formatDecimal(promo.discountAmount,0,'COMMA',0,'POINT')} + 'đ'"></div>
+                </div>
+
+                <!-- Right Ticket Content -->
+                <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; line-height: 1.4;" th:text="${promo.description}"></h3>
+                        <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>⏱️</span> 
+                            <span>HSD: <span th:text="${#temporals.format(promo.endDate, 'dd/MM/yyyy')}"></span></span>
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 0.5rem; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                        <span style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: #047857; letter-spacing: 1px; margin-left: 0.5rem;" th:text="${promo.code}"></span>
+                        <button type="button" th:data-code="${promo.code}" onclick="copyCode(this)" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.2s;">
+                            Sao chép
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+        function copyCode(btn) {
+            const code = btn.getAttribute('data-code');
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerText;
+                const originalBg = btn.style.background;
+                
+                btn.innerText = 'Đã chép!';
+                btn.style.background = '#047857'; // Darker green success
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = originalBg;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</main>
+</body>
+</html>

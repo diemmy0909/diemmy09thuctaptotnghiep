@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="form-page" style="max-width: 800px;">
+        <h2 style="margin-bottom:1rem">Đặt vé máy bay</h2>
+        
+        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #e2e8f0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0; color: #0f172a;" th:text="${flight.airline} + ' - ' + ${flight.flightNumber}"></h3>
+                <span class="badge" style="background: #e0f2fe; color: #0369a1; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600;">Bay thẳng</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;" th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"></div>
+                    <div style="color: #64748b; font-size: 0.9rem;" th:text="${#temporals.format(flight.departureTime, 'dd/MM/yyyy')}"></div>
+                    <div style="font-weight: 600; margin-top: 0.25rem;" th:text="${flight.departureCity}"></div>
+                </div>
+                
+                <div style="flex: 1; text-align: center; position: relative; padding: 0 2rem;">
+                    <div style="border-bottom: 2px dashed #cbd5e1; width: 100%; position: absolute; top: 50%; z-index: 1;"></div>
+                    <span style="background: #f8fafc; padding: 0 10px; position: relative; z-index: 2; font-size: 1.5rem;">✈️</span>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a;" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+                    <div style="color: #64748b; font-size: 0.9rem;" th:text="${#temporals.format(flight.arrivalTime, 'dd/MM/yyyy')}"></div>
+                    <div style="font-weight: 600; margin-top: 0.25rem;" th:text="${flight.arrivalCity}"></div>
+                </div>
+            </div>
+        </div>
+        
+        <p class="card-price" id="totalPrice" style="font-size: 1.5rem; color: #047857; font-weight: bold; text-align: right; margin-bottom: 1.5rem;" th:text="'Tổng: ' + ${#numbers.formatDecimal(totalAmount,0,'COMMA',0,'POINT')} + ' đ'"></p>
+        
+        <form th:action="@{/dat-ve-may-bay}" method="post">
+            <input type="hidden" name="flightId" th:value="${flight.id}">
+            
+            <h3 style="margin-bottom: 1rem;">1. Dịch vụ chuyến bay</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Số lượng hành khách</label>
+                    <input type="number" id="passengers" name="passengers" th:value="${passengers}" class="form-control" required min="1" th:max="${flight.availableSeats}" onchange="calculateTotal()" oninput="calculateTotal()">
+                    <small style="color: #64748b;">(Tối đa: <span th:text="${flight.availableSeats}"></span> ghế)</small>
+                </div>
+                <div class="form-group">
+                    <label>Hành lý mua thêm (Kg)</label>
+                    <select id="extraBaggageKg" name="extraBaggageKg" class="form-control" onchange="calculateTotal()">
+                        <option value="0">Không mua thêm (0 đ)</option>
+                        <option value="15">15 Kg (+150,000 đ)</option>
+                        <option value="20">20 Kg (+200,000 đ)</option>
+                        <option value="30">30 Kg (+300,000 đ)</option>
+                        <option value="40">40 Kg (+400,000 đ)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Ghi chú chọn ghế ngồi (Nếu có)</label>
+                <input type="text" name="seatNumbers" class="form-control" placeholder="VD: Lối đi, Cửa sổ, Hàng ghế đầu (Tùy thuộc vào tình trạng chuyến bay)">
+            </div>
+            
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">2. Thông tin liên hệ</h3>
+            <div class="form-group"><label>Họ tên</label><input name="fullName" th:value="${user.fullName}" class="form-control" required></div>
+            <div class="form-group"><label>Email</label><input type="email" name="email" th:value="${user.email}" class="form-control" required></div>
+            <div class="form-group"><label>Số điện thoại</label><input name="phone" th:value="${user.phone}" class="form-control" required></div>
+            
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 1.5rem; padding: 16px; font-size: 1.1rem; font-weight: bold;">Xác nhận đặt vé & Thanh toán</button>
+        </form>
+    </div>
+    
+    <script th:inline="javascript">
+        const basePrice = /*[[${flight.price}]]*/ 0;
+        
+        function calculateTotal() {
+            const passengers = parseInt(document.getElementById('passengers').value) || 1;
+            const extraBaggageKg = parseInt(document.getElementById('extraBaggageKg').value) || 0;
+            
+            // Giả sử giá là 10,000đ/1kg hành lý mua thêm
+            const baggagePrice = extraBaggageKg * 10000;
+            
+            const total = (basePrice * passengers) + baggagePrice;
+            document.getElementById('totalPrice').innerText = 'Tổng: ' + total.toLocaleString('en-US') + ' đ';
+        }
+    </script>
+</section>
+</body>
+</html>

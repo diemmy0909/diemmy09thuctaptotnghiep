@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="container" style="padding:3rem 0;max-width:800px">
+        <h1>Giới thiệu</h1>
+        <p style="margin-top:1rem;color:#475569">AluminumTravel là hệ thống đặt phòng trực tuyến, kết nối dữ liệu động từ admin: khách sạn, phòng, khuyến mãi, đánh giá được cập nhật realtime từ MySQL.</p>
+        <h3 style="margin-top:2rem">Dịch vụ</h3>
+        <ul style="margin:1rem 0 0 1.5rem;color:#475569">
+            <li>Tìm kiếm và đặt phòng trực tuyến</li>
+            <li>Thanh toán tiền mặt, chuyển khoản, ví điện tử</li>
+            <li>Quản lý lịch sử đặt phòng</li>
+            <li>Khuyến mãi từ hệ thống admin</li>
+        </ul>
+    </div>
+</section>
+</body>
+</html>

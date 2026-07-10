@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card">
+        <h3 th:text="${customer.fullName}"></h3>
+        <p><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+        <p><strong>SĐT:</strong> <span th:text="${customer.phone}"></span></p>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;margin-top:1rem">
+        <h4 style="padding:1rem;margin:0">Lịch sử đặt phòng</h4>
+        <table>
+            <thead><tr><th>Mã</th><th>Phòng</th><th>Nhận</th><th>Trả</th><th>Tổng</th><th>TT</th></tr></thead>
+            <tbody>
+            <tr th:each="b : ${bookings}">
+                <td th:text="${b.bookingCode}"></td>
+                <td th:text="${b.room.roomType}"></td>
+                <td th:text="${#temporals.format(b.checkInDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#temporals.format(b.checkOutDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#numbers.formatDecimal(b.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                <td th:text="${b.status}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(bookings)}"><td colspan="6" class="empty-state">Chưa có đặt phòng</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

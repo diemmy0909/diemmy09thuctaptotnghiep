@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="public/layout :: layout(~{::main})">
+<head>
+    <title>Tất cả sản phẩm - Khách sạn</title>
+</head>
+<body>
+<main>
+    <div class="container" style="padding-top: 3rem; padding-bottom: 5rem;">
+        <h1 style="color: #047857; text-align: center; margin-bottom: 0.5rem; font-weight: 800; font-size: 2.2rem;">Khám Phá Các Nơi Nghỉ Chân Lí Tưởng</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 3rem; font-size: 1.1rem;">Danh sách các khách sạn tuyệt vời đang chờ đón bạn trên AluminumTravel</p>
+
+        <!-- Nếu không có khách sạn nào -->
+        <div th:if="${hotels == null or hotels.isEmpty()}" style="text-align: center; padding: 4rem; background: #f8fafc; border-radius: 12px; color: #64748b;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🏢</div>
+            <h3>Hiện tại chưa có khách sạn nào trên hệ thống</h3>
+        </div>
+
+        <!-- Lưới danh sách khách sạn -->
+        <div th:if="${hotels != null and !hotels.isEmpty()}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            
+            <a th:each="hotel : ${hotels}" th:href="@{/khach-san/{id}(id=${hotel.id})}" style="text-decoration: none; display: block; color: inherit;">
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 15px -3px rgba(16, 185, 129, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0,0,0,0.05)';">
+                    
+                    <!-- Hình ảnh khách sạn -->
+                    <div style="height: 200px; position: relative;">
+                        <img th:if="${hotel.imageUrl}" th:src="${hotel.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" alt="Hotel Image">
+                        <div th:unless="${hotel.imageUrl}" style="width: 100%; height: 100%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 2rem;">🏨</div>
+                        
+                        <!-- Số sao -->
+                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fbbf24; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
+                            <span th:text="${hotel.starRating}"></span> ⭐
+                        </div>
+                    </div>
+
+                    <!-- Thông tin chi tiết -->
+                    <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;" th:text="${hotel.name}">Tên Khách Sạn</h3>
+                        
+                        <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 1rem; color: #64748b; font-size: 0.9rem;">
+                            <span style="color: #ef4444; flex-shrink: 0;">📍</span>
+                            <span th:text="${hotel.address}">Địa chỉ</span>
+                        </div>
+                        
+                        <p style="margin: 0 0 1rem 0; color: #475569; font-size: 0.95rem; line-height: 1.5; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;" th:text="${hotel.description}">
+                            Mô tả chi tiết về khách sạn này...
+                        </p>
+                        
+                        <p th:if="${hotelPrices != null and hotelPrices.containsKey(hotel.id)}" style="margin-top:auto; margin-bottom:1rem; font-weight:bold; color:#047857; font-size:1.1rem;">
+                            Từ <span th:text="${#numbers.formatDecimal(hotelPrices.get(hotel.id), 0, 'COMMA', 0, 'POINT')}"></span> đ
+                        </p>
+                        <p th:unless="${hotelPrices != null and hotelPrices.containsKey(hotel.id)}" style="margin-top:auto; margin-bottom:1rem; font-style:italic; color:#94a3b8; font-size:0.9rem;">
+                            Đang cập nhật giá
+                        </p>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 1rem; margin-top: auto;">
+                            <span style="background: #d1fae5; color: #047857; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Xem phòng</span>
+                        </div>
+                    </div>
+
+                </div>
+            </a>
+            
+        </div>
+        <!-- Phân trang -->
+        <div th:if="${totalPages > 1}" style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:3rem;">
+            <!-- Nút Trang trước -->
+            <a th:if="${currentPage > 1}" 
+               th:href="@{/tat-ca-san-pham(page=${currentPage - 1})}" 
+               style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;"
+               onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+                &larr; Trang trước
+            </a>
+            <span th:if="${currentPage <= 1}" style="padding:8px 16px; border:1px solid #e2e8f0; border-radius:6px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; gap:5px; cursor:not-allowed;">
+                &larr; Trang trước
+            </span>
+
+            <!-- Số trang -->
+            <div style="font-weight:600; color:#475569;">
+                Trang <span th:text="${currentPage}" style="color:#0f172a; font-size:1.1rem;"></span> / <span th:text="${totalPages}"></span>
+            </div>
+
+            <!-- Nút Trang sau -->
+            <a th:if="${currentPage < totalPages}" 
+               th:href="@{/tat-ca-san-pham(page=${currentPage + 1})}" 
+               style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;"
+               onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+                Trang sau &rarr;
+            </a>
+            <span th:if="${currentPage >= totalPages}" style="padding:8px 16px; border:1px solid #e2e8f0; border-radius:6px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; gap:5px; cursor:not-allowed;">
+                Trang sau &rarr;
+            </span>
+        </div>
+        
+    </div>
+</main>
+</body>
+</html>

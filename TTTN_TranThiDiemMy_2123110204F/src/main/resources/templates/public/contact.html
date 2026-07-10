@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="container" style="padding:2rem 0">
+        <div class="detail-grid">
+            <div>
+                <h1>Liên hệ</h1>
+                <p style="margin-top:1rem"><strong>Địa chỉ:</strong> 123 Đường Biển, Đà Nẵng</p>
+                <p><strong>Email:</strong> contact@hotel.com</p>
+                <p><strong>Hotline:</strong> 1900 1234</p>
+            </div>
+            <div class="form-page" style="margin:0">
+                <h3>Gửi tin nhắn</h3>
+                <form th:action="@{/lien-he}" method="post">
+                    <div class="form-group"><label>Họ tên</label><input name="fullName" class="form-control" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" required></div>
+                    <div class="form-group"><label>SĐT</label><input name="phone" class="form-control"></div>
+                    <div class="form-group"><label>Nội dung</label><textarea name="message" class="form-control" rows="4" required></textarea></div>
+                    <button type="submit" class="btn btn-primary">Gửi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

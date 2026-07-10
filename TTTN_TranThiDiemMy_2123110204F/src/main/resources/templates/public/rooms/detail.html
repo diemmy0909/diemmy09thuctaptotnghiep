@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="container" style="padding:2rem 0;max-width:900px">
+        <img th:if="${room.imageUrl}" th:src="${room.imageUrl}" style="width:100%;max-height:400px;object-fit:cover;border-radius:12px" alt="">
+        <div th:unless="${room.imageUrl}" class="placeholder-img" style="height:300px">R</div>
+        <h1 style="margin-top:1.5rem" th:text="${room.roomType} + ' - ' + ${room.hotel.name}"></h1>
+        <p class="card-price" th:text="${@currencyFormatter.format(room.price, session.currency)} + ' ' + #{lbl.night}"></p>
+        <p><span th:text="#{room.capacity}">Sức chứa:</span> <span th:text="${room.maxGuests}"></span></p>
+        <p><span th:text="#{room.status}">Trạng thái:</span> <span th:text="${room.status}"></span></p>
+        <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+            <span th:if="${room.freeCancellation}" style="background:#dcfce7;color:#166534;padding:0.5rem 1rem;border-radius:8px;font-weight:600" th:text="#{room.free_cancel}">Miễn phí hủy phòng</span>
+            <span th:if="${room.breakfastIncluded}" style="background:#dcfce7;color:#166534;padding:0.5rem 1rem;border-radius:8px;font-weight:600" th:text="#{room.breakfast}">Đã bao gồm bữa sáng</span>
+            <span th:if="${room.prepayRequired}" style="background:#fee2e2;color:#991b1b;padding:0.5rem 1rem;border-radius:8px;font-weight:600" th:text="#{room.prepay}">Yêu cầu thanh toán trước</span>
+            <span th:unless="${room.prepayRequired}" style="background:#e0f2fe;color:#075985;padding:0.5rem 1rem;border-radius:8px;font-weight:600" th:text="#{room.pay_at_hotel}">Thanh toán tại khách sạn</span>
+        </div>
+        <h3 style="margin-top:1rem" th:text="#{hotel.amenities}">Tiện nghi khách sạn</h3>
+        <div class="amenity-tags">
+            <span class="amenity-tag" th:each="a : ${room.hotel.amenities}" th:text="${a.name}"></span>
+        </div>
+        <div style="margin-top:2rem">
+            <a th:href="@{/dat-phong(roomId=${room.id},checkIn=${checkIn},checkOut=${checkOut},guests=${guests})}"
+               class="btn btn-primary" sec:authorize="isAuthenticated()" th:text="#{room.book_now}">Đặt phòng ngay</a>
+            <a th:href="@{'/dang-nhap?redirect=/phong/' + ${room.id}}" class="btn btn-primary" sec:authorize="!isAuthenticated()" th:text="#{room.login_book}">Đăng nhập để đặt phòng</a>
+            <a th:href="@{/khach-san/{id}(id=${room.hotel.id})}" class="btn btn-outline" style="margin-left:0.5rem" th:text="#{btn.back}">Quay lại</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2>Quản lý Tour & Vé Tham Quan</h2>
+        <a th:href="@{/admin/tickets/create}" class="btn btn-primary">+ Thêm vé/tour mới</a>
+    </div>
+    
+    <div class="card">
+        <div style="overflow-x:auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Tên dịch vụ</th>
+                        <th>Danh mục</th>
+                        <th>Địa điểm</th>
+                        <th>Giá người lớn</th>
+                        <th>Giá trẻ em</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="t : ${tickets}">
+                        <td>
+                            <img th:if="${t.imageUrl}" th:src="${t.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:4px">
+                            <div th:unless="${t.imageUrl}" style="width:60px;height:40px;background:#e2e8f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:#64748b">No img</div>
+                        </td>
+                        <td th:text="${t.title}"></td>
+                        <td><span class="badge" th:text="${t.category.displayName}"></span></td>
+                        <td th:text="${t.location}"></td>
+                        <td th:text="${#numbers.formatDecimal(t.adultPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                        <td th:text="${#numbers.formatDecimal(t.childPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                        <td>
+                            <div class="btn-group">
+                                <a th:href="@{/admin/tickets/edit/{id}(id=${t.id})}" class="btn btn-secondary btn-sm">Sửa</a>
+                                <form th:action="@{/admin/tickets/delete/{id}(id=${t.id})}" method="post" style="display:inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(tickets)}">
+                        <td colspan="7" style="text-align:center">Chưa có vé/tour nào</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

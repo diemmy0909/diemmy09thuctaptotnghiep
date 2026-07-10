@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section" th:with="pageTitle=${hotel.name}">
+    <div class="container" style="padding:2rem 0">
+        <div class="detail-hero">
+            <img th:if="${hotel.imageUrl}" th:src="${hotel.imageUrl}" alt="">
+            <div th:unless="${hotel.imageUrl}" class="placeholder-img" style="height:100%">H</div>
+        </div>
+        <div class="detail-grid">
+            <div>
+                <h1 th:text="${hotel.name}"></h1>
+                <p class="stars" th:text="${hotel.starRating} + ' sao'"></p>
+                <p th:text="${hotel.address}" style="color:#64748b;margin:0.5rem 0"></p>
+                <p th:text="${hotel.description}"></p>
+                <h3 style="margin-top:1.5rem" th:text="#{hotel.amenities}">Tiện nghi</h3>
+                <div class="amenity-tags">
+                    <span class="amenity-tag" th:each="a : ${hotel.amenities}" th:text="${a.name}"></span>
+                </div>
+                <h3 style="margin-top:1.5rem" th:text="#{hotel.rooms}">Danh sách phòng</h3>
+                <div th:each="r : ${rooms}" class="room-row">
+                    <img th:if="${r.imageUrl}" th:src="${r.imageUrl}" alt="">
+                    <div th:unless="${r.imageUrl}" class="placeholder-img" style="width:120px;height:80px;font-size:1.5rem">R</div>
+                    <div style="flex:1">
+                        <strong th:text="${r.roomType}"></strong>
+                        <p th:text="${@currencyFormatter.format(r.price, session.currency)} + ' ' + #{lbl.night}"></p>
+                        <p th:text="'Tối đa ' + ${r.maxGuests} + ' người - ' + ${r.status}"></p>
+                        <div style="margin-top:0.5rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+                            <span th:if="${r.freeCancellation}" style="background:#dcfce7;color:#166534;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;font-weight:600">Miễn phí hủy</span>
+                            <span th:if="${r.breakfastIncluded}" style="background:#dcfce7;color:#166534;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;font-weight:600">Bao gồm bữa sáng</span>
+                            <span th:if="${r.prepayRequired}" style="background:#fee2e2;color:#991b1b;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;font-weight:600">Phải trả trước</span>
+                            <span th:unless="${r.prepayRequired}" style="background:#e0f2fe;color:#075985;padding:0.25rem 0.5rem;border-radius:4px;font-size:0.75rem;font-weight:600">Thanh toán tại KS</span>
+                        </div>
+                    </div>
+                    <a th:href="@{/phong/{id}(id=${r.id})}" class="btn btn-primary btn-sm">Xem phòng</a>
+                </div>
+                <h3 style="margin-top:1.5rem" th:text="#{hotel.reviews}">Đánh giá</h3>
+                
+                <!-- Hiển thị thông báo (nếu có) -->
+                <div th:if="${successMessage}" class="alert" style="background:#dcfce7;color:#166534;padding:1rem;border-radius:8px;margin-bottom:1rem;" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert" style="background:#fee2e2;color:#991b1b;padding:1rem;border-radius:8px;margin-bottom:1rem;" th:text="${errorMessage}"></div>
+
+                <!-- Form Đánh giá (chỉ hiện khi đã đăng nhập) -->
+                <div th:if="${#authorization.expression('isAuthenticated()')}" class="card" style="padding:1.5rem; margin-bottom:1.5rem; background:#f8fafc; border:1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; margin-bottom:1rem; font-size:1.1rem;" th:text="#{hotel.write_review}">Viết đánh giá của bạn</h4>
+                    <form th:action="@{/danh-gia/khach-san}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="hotelId" th:value="${hotel.id}">
+                        
+                        <div style="margin-bottom:1rem;">
+                            <label style="display:block; font-weight:600; margin-bottom:0.5rem;" th:text="#{hotel.rating}">Số sao:</label>
+                            <select name="rating" class="form-control" style="width:100px;" required>
+                                <option value="5">5 Sao (Tuyệt vời)</option>
+                                <option value="4">4 Sao (Tốt)</option>
+                                <option value="3">3 Sao (Khá)</option>
+                                <option value="2">2 Sao (Tệ)</option>
+                                <option value="1">1 Sao (Rất tệ)</option>
+                            </select>
+                        </div>
+                        
+                        <div style="margin-bottom:1rem;">
+                            <label style="display:block; font-weight:600; margin-bottom:0.5rem;" th:text="#{hotel.comment}">Bình luận:</label>
+                            <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm của bạn..." required></textarea>
+                        </div>
+                        
+                        <div style="margin-bottom:1rem;">
+                            <label style="display:block; font-weight:600; margin-bottom:0.5rem;" th:text="#{hotel.image}">Đính kèm hình ảnh (tùy chọn):</label>
+                            <input type="file" name="image" class="form-control" accept="image/*" style="padding: 0.4rem; font-size: 0.9rem;">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem;" th:text="#{hotel.submit_review}">Gửi đánh giá</button>
+                    </form>
+                </div>
+                
+                <div th:unless="${#authorization.expression('isAuthenticated()')}" class="card" style="padding:1.5rem; margin-bottom:1.5rem; background:#f8fafc; text-align:center;">
+                    <p style="margin:0; color:#64748b;" th:text="#{hotel.login_review}">Vui lòng <a th:href="@{/dang-nhap}" style="color:#0284c7; font-weight:600;">đăng nhập</a> để viết đánh giá.</p>
+                </div>
+
+                <!-- Danh sách Đánh giá -->
+                <div th:each="rv : ${reviews}" class="review-card" style="margin-bottom:1rem; padding:1.25rem; border:1px solid #e2e8f0; border-radius:8px; background:#fff;">
+                    <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+                        <div style="width:40px; height:40px; background:#e2e8f0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#64748b;" th:text="${#strings.substring(rv.user.fullName, 0, 1)}"></div>
+                        <div>
+                            <strong th:text="${rv.user.fullName}" style="display:block; font-size:1rem; color:#0f172a;"></strong>
+                            <div style="color:#fbbf24; font-size:0.9rem;">
+                                <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= rv.rating ? '★' : '☆'}" th:style="${i <= rv.rating ? '' : 'color:#cbd5e1;'}"></span>
+                                <span style="color:#94a3b8; font-size:0.8rem; margin-left:0.5rem;" th:text="${#temporals.format(rv.createdAt, 'dd/MM/yyyy')}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p th:text="${rv.comment}" style="color:#334155; line-height:1.5; margin:0.5rem 0;"></p>
+                    <div th:if="${rv.imageUrl}" style="margin-top:0.75rem;">
+                        <img th:src="${rv.imageUrl}" alt="Review Image" style="max-width:200px; max-height:200px; border-radius:8px; object-fit:cover; border:1px solid #e2e8f0;">
+                    </div>
+                </div>
+                
+                <p th:if="${#lists.isEmpty(reviews)}" style="color:#64748b; font-style:italic;" th:text="#{hotel.no_reviews}">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!</p>
+            </div>
+            <div>
+                <div class="card" style="padding:1.25rem">
+                    <p class="card-price"><span th:text="#{lbl.price_from}">Từ</span> <span th:text="${@currencyFormatter.format(minPrice, session.currency)}"></span> <span th:text="#{lbl.night}">/đêm</span></p>
+                    <a th:href="@{/khach-san}" class="btn btn-outline" style="width:100%;margin-top:1rem;text-align:center" th:text="#{btn.back}">Quay lại</a>
+                </div>
+                <h4 style="margin:1.5rem 0 0.5rem" th:text="#{hotel.map}">Bản đồ</h4>
+                <div id="map" style="height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1;"></div>
+                
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                <script th:inline="javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var hotelAddress = /*[[${hotel.address}]]*/ 'Hanoi';
+                        var hotelName = /*[[${hotel.name}]]*/ 'Hotel';
+                        
+                        var map = L.map('map').setView([21.0285, 105.8542], 13); // Default Hanoi
+                        
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; OpenStreetMap contributors'
+                        }).addTo(map);
+
+                        // Geocode address using Nominatim
+                        fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(hotelAddress))
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data && data.length > 0) {
+                                    var lat = data[0].lat;
+                                    var lon = data[0].lon;
+                                    map.setView([lat, lon], 15);
+                                    L.marker([lat, lon]).addTo(map)
+                                        .bindPopup('<b>' + hotelName + '</b><br>' + hotelAddress)
+                                        .openPopup();
+                                }
+                            })
+                            .catch(error => console.error('Error geocoding address:', error));
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

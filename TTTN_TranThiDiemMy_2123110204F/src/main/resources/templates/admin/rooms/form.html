@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card" style="max-width:600px">
+        <form th:action="@{/admin/rooms/save}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" th:value="${room.id}">
+            <div class="form-group">
+                <label>Khách sạn *</label>
+                <!-- Hiển thị tên khách sạn nhưng không cho sửa -->
+                <input type="text" class="form-control" th:value="${room.hotel.name}" disabled>
+                <!-- Giá trị thực sự gửi đi -->
+                <input type="hidden" name="hotelId" th:value="${room.hotel.id}">
+            </div>
+            <div class="form-group">
+                <label>Loại phòng *</label>
+                <select name="roomType" class="form-control" required>
+                    <option th:each="t : ${roomTypes}" th:value="${t}" th:text="${t}"
+                            th:selected="${room.roomType == t}"></option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Giá (VNĐ) *</label>
+                    <input type="number" name="price" class="form-control" th:value="${room.price}" required min="0">
+                </div>
+                <div class="form-group">
+                    <label>Số người tối đa *</label>
+                    <input type="number" name="maxGuests" class="form-control" th:value="${room.maxGuests != null ? room.maxGuests : 2}" required min="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Trạng thái</label>
+                <select name="status" class="form-control">
+                    <option th:each="s : ${roomStatuses}" th:value="${s}" th:text="${s}"
+                            th:selected="${room.status == s or (room.status == null and s.name() == 'AVAILABLE')}"></option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label style="display:flex;align-items:center;gap:0.5rem">
+                    <input type="checkbox" name="freeCancellation" th:checked="${room.freeCancellation == true}" value="true"> Miễn phí hủy
+                </label>
+                <label style="display:flex;align-items:center;gap:0.5rem">
+                    <input type="checkbox" name="breakfastIncluded" th:checked="${room.breakfastIncluded == true}" value="true"> Bao gồm bữa sáng
+                </label>
+                <label style="display:flex;align-items:center;gap:0.5rem">
+                    <input type="checkbox" name="prepayRequired" th:checked="${room.prepayRequired == true}" value="true"> Phải trả trước
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Hình ảnh phòng</label>
+                <div th:if="${room.imageUrl}" style="margin-bottom:0.75rem">
+                    <img th:src="${room.imageUrl}" class="img-detail" style="max-height:160px" alt="Ảnh hiện tại">
+                    <p style="font-size:0.8rem;color:#64748b;margin:0.35rem 0 0">Ảnh hiện tại (chọn file mới để thay)</p>
+                </div>
+                <input type="file" name="imageFile" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp">
+                <p style="font-size:0.8rem;color:#64748b;margin:0.35rem 0 0">Chọn ảnh từ máy tính — lưu đường dẫn vào database.</p>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a th:href="@{/admin/rooms/hotel/{id}(id=${room.hotel.id})}" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card" style="max-width:720px">
+        <h2 style="margin-bottom:1.5rem" th:text="${ticket.id == null ? 'Thêm Vé/Tour mới' : 'Sửa Vé/Tour'}"></h2>
+        <form th:action="@{/admin/tickets/save}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" th:value="${ticket.id}">
+            
+            <div class="form-group">
+                <label>Tên dịch vụ (Vé/Tour) *</label>
+                <input type="text" name="title" class="form-control" th:value="${ticket.title}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Danh mục *</label>
+                <select name="category" class="form-control" required>
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.displayName}" th:selected="${ticket.category == cat}"></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Địa điểm *</label>
+                <input type="text" name="location" class="form-control" th:value="${ticket.location}" required placeholder="Ví dụ: Đà Nẵng, Phú Quốc...">
+            </div>
+            
+            <div class="form-group">
+                <label>Hình ảnh đính kèm (Chọn ảnh từ thư mục)</label>
+                <input type="file" name="imageFile" class="form-control" accept="image/*">
+                <small th:if="${ticket.imageUrl != null}">Đã có ảnh. <a th:href="${ticket.imageUrl}" target="_blank">Xem ảnh hiện tại</a></small>
+                <!-- Lưu trữ tạm thời giá trị ảnh cũ nếu không chọn ảnh mới -->
+                <input type="hidden" name="imageUrl" th:value="${ticket.imageUrl}">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Giá người lớn (đ) *</label>
+                    <input type="number" name="adultPrice" class="form-control" th:value="${ticket.adultPrice}" required min="0">
+                </div>
+                <div class="form-group">
+                    <label>Giá trẻ em (đ) *</label>
+                    <input type="number" name="childPrice" class="form-control" th:value="${ticket.childPrice}" required min="0">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Mô tả chi tiết</label>
+                <textarea name="description" class="form-control" rows="5" th:text="${ticket.description}"></textarea>
+            </div>
+            
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a th:href="@{/admin/tickets}" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

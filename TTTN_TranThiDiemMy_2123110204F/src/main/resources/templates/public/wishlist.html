@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="container" style="padding:2rem 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+            <h1>Khách sạn yêu thích</h1>
+        </div>
+        
+        <div class="grid">
+            <div th:each="w : ${wishlists}" class="card" style="position:relative">
+                <a th:href="@{/khach-san/{id}(id=${w.hotel.id})}" style="text-decoration:none;color:inherit">
+                    <img th:if="${w.hotel.imageUrl}" th:src="${w.hotel.imageUrl}" class="card-img" alt="">
+                    <div th:unless="${w.hotel.imageUrl}" class="placeholder-img">H</div>
+                    <div class="card-body">
+                        <h3 class="card-title" th:text="${w.hotel.name}"></h3>
+                        <p class="card-meta" th:text="${w.hotel.address}"></p>
+                        <p class="stars" th:text="${w.hotel.starRating} + ' sao'"></p>
+                    </div>
+                </a>
+                <button class="btn-wishlist" th:attr="data-hotel-id=${w.hotel.id}" style="position:absolute;top:10px;right:10px;background:white;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;color:#ef4444;font-size:1.2rem">
+                    ❤️
+                </button>
+            </div>
+        </div>
+        <p th:if="${#lists.isEmpty(wishlists)}" style="text-align:center;color:#64748b;padding:2rem">Chưa có khách sạn nào trong danh sách yêu thích.</p>
+    </div>
+
+    <!-- CSRF token for fetch -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <script>
+        document.querySelectorAll('.btn-wishlist').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const hotelId = this.getAttribute('data-hotel-id');
+                const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+                const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+                fetch('/api/wishlist/toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken
+                    },
+                    body: JSON.stringify({ hotelId: parseInt(hotelId) })
+                })
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = '/dang-nhap';
+                        throw new Error('Unauthorized');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.isSaved) {
+                        this.innerText = '❤️';
+                    } else {
+                        // Removed from wishlist view
+                        this.closest('.card').remove();
+                        if (document.querySelectorAll('.card').length === 0) {
+                            location.reload();
+                        }
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+        });
+    </script>
+</section>
+</body>
+</html>

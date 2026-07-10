@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="public/layout :: layout(~{::main})">
+<head>
+    <title>Ưu đãi</title>
+</head>
+<body>
+<main>
+    <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+        
+        <!-- Top Main Tabs -->
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 3rem; font-weight: 600; font-size: 1.1rem;">
+            <div style="background: #10b981; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Dành cho bạn</div>
+
+        </div>
+        
+        <!-- SECTION 1: Mã Giảm Giá Có Hạn -->
+        <div style="margin-bottom: 4rem;">
+            <h2 style="text-align: center; color: #047857; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Mã Giảm Giá Có Hạn</h2>
+            
+            <div class="promo-tabs-container" style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; font-weight: 600; color: #475569;">
+                <div class="promo-tab active" style="padding-bottom: 8px; cursor: pointer;">Ngân hàng</div>
+                <div class="promo-tab" style="padding-bottom: 8px; cursor: pointer;">Vé máy bay</div>
+                <div class="promo-tab" style="padding-bottom: 8px; cursor: pointer;">Khách sạn</div>
+                <div class="promo-tab" style="padding-bottom: 8px; cursor: pointer;">Vé vui chơi</div>
+                <div class="promo-tab" style="padding-bottom: 8px; cursor: pointer;">Du thuyền</div>
+            </div>
+            
+            <div style="display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 1rem; scrollbar-width: thin; padding-top: 20px;">
+                <!-- Card 1 -->
+                <div style="min-width: 350px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #10b981; font-size: 1.5rem;">ACB</div>
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.2rem; display: flex; align-items: center; justify-content: space-between;">
+                                Giảm giá 200k VND
+                                <span style="color: #94a3b8; font-size: 1.2rem; cursor: pointer;">ⓘ</span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #64748b; line-height: 1.4;">Giao dịch tối thiểu 3 triệu đồng cho thẻ ACB Visa</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.5rem; border-radius: 8px;">
+                        <div style="font-family: monospace; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>📄</span> ACBFY200
+                        </div>
+                        <button style="background: #d1fae5; color: #047857; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">Copy</button>
+                    </div>
+                </div>
+                
+                <!-- Card 2 (With Tag) -->
+                <div style="min-width: 350px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
+                    <div style="position: absolute; top: -12px; left: 20px; background: #fee2e2; color: #ef4444; padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Hết hạn hôm nay</div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; margin-top: 0.5rem;">
+                        <div style="width: 50px; height: 50px; background: #ef4444; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">SACO</div>
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.2rem; display: flex; align-items: center; justify-content: space-between;">
+                                Giảm đến 1 Triệu VND
+                                <span style="color: #94a3b8; font-size: 1.2rem; cursor: pointer;">ⓘ</span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #64748b; line-height: 1.4;">Tối thiểu giao dịch 4 triệu đồng bằng thẻ tín dụng ...</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.5rem; border-radius: 8px;">
+                        <div style="font-family: monospace; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>📄</span> BAYKRTCBDD
+                        </div>
+                        <button style="background: #d1fae5; color: #047857; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">Copy</button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div style="min-width: 350px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="width: 50px; height: 50px; background: #10b981; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">UOB</div>
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.2rem; display: flex; align-items: center; justify-content: space-between;">
+                                Giảm giá 550k VND
+                                <span style="color: #94a3b8; font-size: 1.2rem; cursor: pointer;">ⓘ</span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #64748b; line-height: 1.4;">Giao dịch tối thiểu 5 triệu đồng cho thẻ tín dụng UOB</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 0.5rem; border-radius: 8px;">
+                        <div style="font-family: monospace; font-weight: 600; color: #64748b; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>📄</span> UOBFLY550
+                        </div>
+                        <button style="background: #d1fae5; color: #047857; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Gợi Ý Cho Bạn -->
+        <div style="margin-bottom: 4rem;">
+            <h2 style="text-align: center; color: #047857; font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Gợi Ý Cho Bạn</h2>
+            
+            <div class="suggestion-pills-container" style="display: flex; gap: 1rem; margin-bottom: 2rem; font-weight: 600;">
+                <div class="suggestion-pill active" style="padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; cursor: pointer;">Chuyến bay</div>
+                <div class="suggestion-pill" style="padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; cursor: pointer;">Khách sạn</div>
+                <div class="suggestion-pill" style="padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; cursor: pointer;">Vé vui chơi</div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+                
+                <!-- Flight Card 1 -->
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div style="height: 150px; background: url('https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80') no-repeat center; background-size: cover; position: relative;">
+                        <span style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px;">MỘT CHIỀU</span>
+                        <span style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.3); color: white; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;">🔖</span>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="font-weight: 600; color: #334155; margin-bottom: 0.2rem;">TP HCM - Đà Nẵng</div>
+                        <div style="font-size: 0.8rem; color: #ef4444; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem;"><span>✈️</span> 10 thg 9 2026</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8; text-decoration: line-through;">680.644 VND</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: #f97316;">653.400 VND</div>
+                    </div>
+                </div>
+
+                <!-- Flight Card 2 -->
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div style="height: 150px; background: url('https://images.unsplash.com/photo-1599708153386-62bf3f034eb8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80') no-repeat center; background-size: cover; position: relative;">
+                        <span style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px;">MỘT CHIỀU</span>
+                        <span style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.3); color: white; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;">🔖</span>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="font-weight: 600; color: #334155; margin-bottom: 0.2rem;">TP HCM - Hà Nội</div>
+                        <div style="font-size: 0.8rem; color: #ef4444; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem;"><span>✈️</span> 14 thg 2 2027</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1.1rem;"></div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: #f97316;">869.478 VND</div>
+                    </div>
+                </div>
+
+                <!-- Flight Card 3 -->
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div style="height: 150px; background: url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80') no-repeat center; background-size: cover; position: relative;">
+                        <span style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px;">MỘT CHIỀU</span>
+                        <span style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.3); color: white; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;">🔖</span>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="font-weight: 600; color: #334155; margin-bottom: 0.2rem;">Hà Nội - TP HCM</div>
+                        <div style="font-size: 0.8rem; color: #ef4444; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem;"><span>✈️</span> 31 thg 3 2027</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1.1rem;"></div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: #f97316;">1.174.563 VND</div>
+                    </div>
+                </div>
+
+                <!-- Flight Card 4 -->
+                <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div style="height: 150px; background: url('https://images.unsplash.com/photo-1525625293386-3f8f99389edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80') no-repeat center; background-size: cover; position: relative;">
+                        <span style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px;">MỘT CHIỀU</span>
+                        <span style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.3); color: white; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;">🔖</span>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="font-weight: 600; color: #334155; margin-bottom: 0.2rem;">TP HCM - Singapore</div>
+                        <div style="font-size: 0.8rem; color: #eab308; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem;"><span>✈️</span> 26 thg 9 2026</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8; text-decoration: line-through;">1.333.673 VND</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: #f97316;">1.332.936 VND</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 3: Những Ưu Đãi Đặc Biệt -->
+        <div>
+            <h2 style="text-align: center; color: #047857; font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem;">Những Ưu Đãi Đặc Biệt</h2>
+            
+            <div style="display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 1rem; scrollbar-width: none;">
+                <!-- Banner 1 -->
+                <div style="min-width: 400px; height: 200px; border-radius: 16px; background: url('https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') no-repeat center; background-size: cover; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 2rem;">
+                    <div style="background: linear-gradient(to right, rgba(16, 185, 129, 0.9), transparent); position: absolute; inset: 0;"></div>
+                    <div style="position: relative; z-index: 1; color: white;">
+                        <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.2;">Đi chill<br>cuối tuần</h3>
+                        <p style="font-size: 0.9rem; font-weight: 600; margin-top: 1rem;">Ưu đãi đến 30%</p>
+                    </div>
+                </div>
+                
+                <!-- Banner 2 -->
+                <div style="min-width: 400px; height: 200px; border-radius: 16px; background: url('https://images.unsplash.com/photo-1459749411175-04bf5292ceea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') no-repeat center; background-size: cover; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 2rem;">
+                    <div style="background: linear-gradient(to right, rgba(4, 120, 87, 0.9), transparent); position: absolute; inset: 0;"></div>
+                    <div style="position: relative; z-index: 1; color: white;">
+                        <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.2;">Trạm dừng chân<br>của mọi fandom</h3>
+                        <p style="font-size: 0.8rem; opacity: 0.9; max-width: 200px;">Ưu đãi trọn gói tận hưởng concert từ AluminumTravel</p>
+                    </div>
+                </div>
+                
+                <!-- Banner 3 -->
+                <div style="min-width: 400px; height: 200px; border-radius: 16px; background: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') no-repeat center; background-size: cover; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 2rem;">
+                    <div style="background: linear-gradient(to right, rgba(16, 185, 129, 0.9), transparent); position: absolute; inset: 0;"></div>
+                    <div style="position: relative; z-index: 1; color: white;">
+                        <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.2;">Gấp Đôi Ưu Đãi<br>Tích lũy dặm bay</h3>
+                        <p style="font-size: 0.8rem; opacity: 0.9;">Đặt trên app AluminumTravel ngay!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <style>
+        /* Promo Tabs Styles */
+        .promo-tab {
+            color: #475569;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .promo-tab:hover {
+            color: #10b981;
+        }
+        .promo-tab.active {
+            color: #10b981;
+            border-bottom: 3px solid #10b981;
+        }
+        
+        /* Suggestion Pills Styles */
+        .suggestion-pill {
+            background: #f1f5f9;
+            color: #10b981;
+            transition: all 0.3s ease;
+        }
+        .suggestion-pill:hover {
+            background: #e2e8f0;
+        }
+        .suggestion-pill.active {
+            background: #10b981;
+            color: white;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Promo Tabs Click Logic
+            const promoTabs = document.querySelectorAll('.promo-tab');
+            promoTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active from all
+                    promoTabs.forEach(t => t.classList.remove('active'));
+                    // Add active to clicked
+                    this.classList.add('active');
+                });
+            });
+
+            // Suggestion Pills Click Logic
+            const suggestionPills = document.querySelectorAll('.suggestion-pill');
+            suggestionPills.forEach(pill => {
+                pill.addEventListener('click', function() {
+                    // Remove active from all
+                    suggestionPills.forEach(p => p.classList.remove('active'));
+                    // Add active to clicked
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</main>
+</body>
+</html>

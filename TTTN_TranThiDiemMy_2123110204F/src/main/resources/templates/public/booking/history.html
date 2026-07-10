@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="container" style="padding:2rem 0">
+        <h1>Lịch sử đặt phòng</h1>
+        <table class="table-bookings" style="margin-top:1.5rem">
+            <thead><tr><th>Mã</th><th>Khách sạn</th><th>Phòng</th><th>Nhận</th><th>Trả</th><th>Tổng tiền</th><th>Trạng thái</th><th>Mã E-Ticket</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="b : ${bookings}">
+                <td th:text="${b.bookingCode}"></td>
+                <td th:text="${b.room.hotel.name}"></td>
+                <td th:text="${b.room.roomType}"></td>
+                <td th:text="${#temporals.format(b.checkInDate,'dd/MM/yyyy')}"></td>
+                <td th:text="${#temporals.format(b.checkOutDate,'dd/MM/yyyy')}"></td>
+                <td th:text="${#numbers.formatDecimal(b.totalAmount,0,'COMMA',0,'POINT')} + ' đ'"></td>
+                <td th:text="${b.status}"></td>
+                <td>
+                    <img th:src="@{'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=' + ${b.bookingCode}}" alt="QR Code" style="border: 2px solid #e2e8f0; border-radius: 4px;"/>
+                </td>
+                <td>
+                    <form th:if="${b.status.name() == 'PENDING' or b.status.name() == 'CONFIRMED'}" th:action="@{/lich-su-dat-phong/{id}/cancel(id=${b.id})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn hủy phòng này?');">
+                        <button type="submit" class="btn btn-sm" style="background-color:#ef4444;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">Hủy</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(bookings)}"><td colspan="9" style="text-align:center">Chưa có đặt phòng</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

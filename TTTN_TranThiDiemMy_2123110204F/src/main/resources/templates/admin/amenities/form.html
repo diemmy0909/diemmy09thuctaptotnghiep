@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card" style="max-width:500px">
+        <form th:action="@{/admin/amenities/save}" method="post">
+            <input type="hidden" name="id" th:value="${amenity.id}">
+            <div class="form-group"><label>Tên *</label><input name="name" class="form-control" th:value="${amenity.name}" required></div>
+            <div class="form-group"><label>Mô tả</label><textarea name="description" class="form-control" th:text="${amenity.description}"></textarea></div>
+            <div class="form-group"><label>Icon</label><input name="icon" class="form-control" th:value="${amenity.icon}" placeholder="wifi, pool..."></div>
+            <div class="btn-group"><button class="btn btn-primary">Lưu</button><a th:href="@{/admin/amenities}" class="btn btn-secondary">Hủy</a></div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

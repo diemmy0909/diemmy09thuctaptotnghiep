@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card" style="padding:0;overflow:hidden">
+        <table>
+            <thead><tr><th>Mã</th><th>Khách hàng</th><th>Phòng</th><th>Nhận</th><th>Trả</th><th>Tổng tiền</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="b : ${bookings}">
+                <td><a th:href="@{/admin/bookings/{id}(id=${b.id})}" th:text="${b.bookingCode}"></a></td>
+                <td th:text="${b.customer.fullName}"></td>
+                <td th:text="${b.room.roomType} + ' - ' + ${b.room.hotel.name}"></td>
+                <td th:text="${#temporals.format(b.checkInDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#temporals.format(b.checkOutDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#numbers.formatDecimal(b.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${b.status.name() == 'PENDING'} ? 'badge-pending' : (${b.status.name() == 'CONFIRMED'} ? 'badge-confirmed' : (${b.status.name() == 'CHECKED_IN'} ? 'badge-checkin' : (${b.status.name() == 'CHECKED_OUT'} ? 'badge-checkout' : 'badge-cancelled')))"
+                          th:text="${b.status}"></span>
+                </td>
+                <td class="btn-group">
+                    <form th:if="${b.status.name() == 'PENDING'}" th:action="@{/admin/bookings/{id}/confirm(id=${b.id})}" method="post" style="display:inline">
+                        <button class="btn btn-success btn-sm">Xác nhận</button>
+                    </form>
+                    <form th:if="${b.status.name() == 'CONFIRMED'}" th:action="@{/admin/bookings/{id}/checkin(id=${b.id})}" method="post" style="display:inline">
+                        <button class="btn btn-primary btn-sm">Check-in</button>
+                    </form>
+                    <form th:if="${b.status.name() == 'CHECKED_IN'}" th:action="@{/admin/bookings/{id}/checkout(id=${b.id})}" method="post" style="display:inline">
+                        <button class="btn btn-warning btn-sm">Check-out</button>
+                    </form>
+                    <form th:if="${b.status.name() != 'CANCELLED' and b.status.name() != 'CHECKED_OUT'}" th:action="@{/admin/bookings/{id}/cancel(id=${b.id})}" method="post" style="display:inline" onsubmit="return confirm('Hủy booking?')">
+                        <button class="btn btn-danger btn-sm">Hủy</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 4rem 0 6rem 0; position: relative;">
+        <div class="container" style="color: white; max-width: 1200px; text-align: center;">
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Khám phá Các Điểm Du Lịch Đáng Trải Nghiệm</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9;">Hàng nghìn trải nghiệm du lịch hấp dẫn đang chờ đón bạn</p>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: -3rem; padding-bottom: 5rem; position: relative; z-index: 10;">
+        <div th:if="${activityPage == null or activityPage.isEmpty()}" style="text-align: center; padding: 4rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); color: #64748b;">
+            <h2>Hiện tại chưa có điểm du lịch nào.</h2>
+        </div>
+
+        <div th:if="${activityPage != null and !activityPage.isEmpty()}" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+            <div th:each="act : ${activityPage.content}" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; transition: transform 0.2s; display: flex; flex-direction: column; height: 100%;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <img th:src="${act.imageUrl}" style="width: 100%; height: 200px; object-fit: cover;">
+                
+                <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem 0; line-height: 1.4;" th:text="${act.title}"></h3>
+                    <div class="desc-container" style="margin-bottom: 1rem; flex-grow: 1;">
+                        <div style="color: #64748b; font-size: 0.9rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;" th:text="${act.description}"></div>
+                        <a th:href="@{/hoat-dong-vui-choi/{id}(id=${act.id})}" style="color: #10b981; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 0.5rem;">Xem chi tiết</a>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div th:if="${activityPage != null and activityPage.totalPages > 1}" style="display: flex; justify-content: center; align-items: stretch; margin-top: 3rem; gap: 0.5rem;">
+            <a th:href="@{/hoat-dong-vui-choi(page=${activityPage.number - 1})}" th:if="${activityPage.hasPrevious()}" class="btn" style="background: white; border: 2px solid #10b981; color: #10b981; display: flex; align-items: center;">&laquo; Trang trước</a>
+            
+            <a th:each="i : ${#numbers.sequence(0, activityPage.totalPages - 1)}"
+               th:href="@{/hoat-dong-vui-choi(page=${i})}" 
+               th:text="${i + 1}" 
+               class="btn"
+               th:style="${i == activityPage.number} ? 'background: #10b981; color: white; border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; min-width: 46px; padding-left: 0; padding-right: 0;' : 'background: white; border: 2px solid #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center; min-width: 46px; padding-left: 0; padding-right: 0;'"></a>
+            
+            <a th:href="@{/hoat-dong-vui-choi(page=${activityPage.number + 1})}" th:if="${activityPage.hasNext()}" class="btn" style="background: white; border: 2px solid #10b981; color: #10b981; display: flex; align-items: center;">Trang tiếp &raquo;</a>
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>

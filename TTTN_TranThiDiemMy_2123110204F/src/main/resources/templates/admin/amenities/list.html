@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="page-header"><span></span><a th:href="@{/admin/amenities/new}" class="btn btn-primary">+ Thêm tiện nghi</a></div>
+    <div class="card" style="padding:0;overflow:hidden">
+        <table>
+            <thead><tr><th>ID</th><th>Tên</th><th>Mô tả</th><th>Icon</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="a : ${amenities}">
+                <td th:text="${a.id}"></td>
+                <td th:text="${a.name}"></td>
+                <td th:text="${a.description}"></td>
+                <td th:text="${a.icon}"></td>
+                <td class="btn-group">
+                    <a th:href="@{/admin/amenities/{id}/edit(id=${a.id})}" class="btn btn-primary btn-sm">Sửa</a>
+                    <form th:action="@{/admin/amenities/{id}/delete(id=${a.id})}" method="post" style="display:inline" onsubmit="return confirm('Xóa?')">
+                        <button class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

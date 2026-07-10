@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card">
+        <img th:if="${hotel.imageUrl}" th:src="${hotel.imageUrl}" class="img-detail" alt="">
+        <h2 th:text="${hotel.name}" style="margin-top:1rem"></h2>
+        <p><strong>Địa chỉ:</strong> <span th:text="${hotel.address}"></span></p>
+        <p><strong>Số sao:</strong> <span th:text="${hotel.starRating}"></span> ⭐</p>
+        <p><strong>Mô tả:</strong></p>
+        <p th:text="${hotel.description}"></p>
+        <p><strong>Tiện nghi:</strong>
+            <span th:each="a, stat : ${hotel.amenities}" th:text="${a.name} + (${stat.last} ? '' : ', ')"></span>
+        </p>
+        <div class="btn-group" style="margin-top:1rem">
+            <a th:href="@{/admin/hotels/{id}/edit(id=${hotel.id})}" class="btn btn-primary">Sửa</a>
+            <a th:href="@{/admin/hotels}" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

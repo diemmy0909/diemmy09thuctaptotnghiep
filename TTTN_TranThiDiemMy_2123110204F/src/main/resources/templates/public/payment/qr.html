@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="public/layout :: layout(~{::main})">
+<head>
+    <title>Thanh toán qua Ví điện tử</title>
+</head>
+<body>
+<main>
+    <div class="container form-page" style="text-align: center; max-width: 500px; padding: 4rem 2rem;">
+        <div style="margin-bottom: 2rem;">
+            <h2 style="color: #10b981; font-size: 2rem; margin-bottom: 0.5rem;">Quét Mã Thanh Toán</h2>
+            <p style="color: #64748b; font-size: 1rem;">Vui lòng mở ứng dụng ví điện tử (Momo/ZaloPay/VNPay) và quét mã QR dưới đây để hoàn tất giao dịch. Mã thanh toán: <strong th:text="${paymentId}" style="color: #0f172a;"></strong></p>
+        </div>
+        
+        <div style="background: white; padding: 2rem; border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: inline-block; margin-bottom: 2.5rem; border: 1px solid #e2e8f0;">
+            <!-- Placeholder QR Code Image -->
+            <img th:src="@{'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=AluminumTravel_Payment_' + ${paymentId}}" alt="QR Code" style="width: 250px; height: 250px; border-radius: 8px;">
+            <div style="margin-top: 1rem; color: #10b981; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+                <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #10b981; border-top-color: transparent; animation: spin 1s linear infinite;"></span>
+                Đang chờ thanh toán...
+            </div>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Simulate success button -->
+            <form th:action="@{/admin/payment/{id}/confirm(id=${paymentId})}" method="post">
+                <!-- For demo purposes, we let the user confirm it themselves or just redirect back -->
+            </form>
+            <a th:href="@{/lich-su-dat-phong}" class="btn btn-primary" style="padding: 14px; font-size: 1.1rem; border-radius: 12px;">Đã thanh toán xong (Mô phỏng)</a>
+            <a th:href="@{/lich-su-dat-phong}" style="color: #64748b; text-decoration: none; font-weight: 600; padding: 10px;">Hủy giao dịch & Quay lại</a>
+        </div>
+    </div>
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</main>
+</body>
+</html>

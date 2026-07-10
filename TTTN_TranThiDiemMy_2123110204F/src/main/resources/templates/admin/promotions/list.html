@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="page-header"><span></span><a th:href="@{/admin/promotions/new}" class="btn btn-primary">+ Tạo voucher</a></div>
+    <div class="card" style="padding:0;overflow:hidden">
+        <table>
+            <thead><tr><th>Mã</th><th>Mô tả</th><th>Giảm %</th><th>Từ</th><th>Đến</th><th>Active</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="p : ${promotions}">
+                <td th:text="${p.code}"></td>
+                <td th:text="${p.description}"></td>
+                <td th:text="${p.discountPercent != null ? p.discountPercent + '%' : '-'}"></td>
+                <td th:text="${#temporals.format(p.startDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${#temporals.format(p.endDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${p.active} ? 'Có' : 'Không'"></td>
+                <td class="btn-group">
+                    <a th:href="@{/admin/promotions/{id}/edit(id=${p.id})}" class="btn btn-primary btn-sm">Sửa</a>
+                    <form th:action="@{/admin/promotions/{id}/delete(id=${p.id})}" method="post" style="display:inline" onsubmit="return confirm('Xóa?')">
+                        <button class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

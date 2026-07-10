@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="card" style="padding:0;overflow:hidden">
+        <table>
+            <thead><tr><th>Khách sạn</th><th>Khách</th><th>Điểm</th><th>Bình luận</th><th>Ảnh đính kèm</th><th>Duyệt</th><th>Thao tác</th></tr></thead>
+            <tbody>
+            <tr th:each="r : ${reviews}">
+                <td th:text="${r.hotel.name}"></td>
+                <td th:text="${r.user.fullName}"></td>
+                <td th:text="${r.rating} + ' ⭐'"></td>
+                <td th:text="${r.comment}"></td>
+                <td>
+                    <img th:if="${r.imageUrl}" th:src="${r.imageUrl}" style="width:50px; height:50px; object-fit:cover; border-radius:4px; border:1px solid #e2e8f0; cursor:pointer;" onclick="window.open(this.src)">
+                    <span th:unless="${r.imageUrl}" style="color:#94a3b8; font-style:italic;">Không có</span>
+                </td>
+                <td><span th:if="${r.approved}" class="badge badge-confirmed">Đã duyệt</span><span th:unless="${r.approved}" class="badge badge-pending">Chờ</span></td>
+                <td class="btn-group">
+                    <form th:if="${!r.approved}" th:action="@{/admin/reviews/{id}/approve(id=${r.id})}" method="post" style="display:inline">
+                        <button class="btn btn-success btn-sm">Duyệt</button>
+                    </form>
+                    <form th:action="@{/admin/reviews/{id}/delete(id=${r.id})}" method="post" style="display:inline" onsubmit="return confirm('Xóa bình luận?')">
+                        <button class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

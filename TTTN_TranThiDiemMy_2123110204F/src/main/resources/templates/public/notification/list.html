@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="container" style="padding:2rem 0; max-width:800px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h1>Thông báo của bạn</h1>
+            <form th:if="${!#lists.isEmpty(notifications)}" th:action="@{/thong-bao/read-all}" method="post">
+                <button type="submit" class="btn btn-sm btn-outline">Đánh dấu tất cả đã đọc</button>
+            </form>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(notifications)}" style="text-align:center; padding:3rem; background:#f8fafc; border-radius:8px;">
+            <div style="font-size:3rem; margin-bottom:1rem;">🔕</div>
+            <p style="color:#64748b; font-size:1.1rem;">Bạn chưa có thông báo nào.</p>
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+            <div th:each="n : ${notifications}" 
+                 th:style="'padding:1.2rem; border-radius:8px; border:1px solid #e2e8f0; display:flex; gap:1rem; align-items:flex-start; ' + (${n.isRead} ? 'background:#f8fafc; opacity:0.8;' : 'background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.05);')">
+                 
+                <!-- Icon based on type -->
+                <div style="font-size:1.5rem; background:#e0f2fe; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%;">
+                    <span th:if="${n.type.name() == 'BOOKING_CONFIRMED'}">🏨</span>
+                    <span th:if="${n.type.name() == 'TICKET_CONFIRMED'}">🎟️</span>
+                    <span th:if="${n.type.name() == 'REMINDER'}">⏰</span>
+                    <span th:if="${n.type.name() == 'PROMOTION'}">🎁</span>
+                </div>
+                
+                <div style="flex:1;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.3rem;">
+                        <h3 th:text="${n.title}" style="margin:0; font-size:1.1rem; color:#0f172a;"></h3>
+                        <small th:text="${#temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm')}" style="color:#94a3b8; font-size:0.8rem;"></small>
+                    </div>
+                    <p th:text="${n.message}" style="margin:0; color:#475569; font-size:0.95rem; line-height:1.5;"></p>
+                </div>
+                
+                <!-- Mark as read button -->
+                <form th:if="${!n.isRead}" th:action="@{/thong-bao/{id}/read(id=${n.id})}" method="post">
+                    <button type="submit" style="background:none; border:none; color:#10b981; font-weight:bold; cursor:pointer; font-size:0.8rem; padding:5px;">Đã đọc ✓</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

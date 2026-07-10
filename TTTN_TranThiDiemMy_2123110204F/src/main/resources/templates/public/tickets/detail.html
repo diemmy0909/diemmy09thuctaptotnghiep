@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::main})}">
+<head>
+    <title th:text="${ticket.title} + ' - Tour & Vé'">Chi tiết</title>
+</head>
+<body>
+<main>
+    <div class="container" style="margin-top: 3rem; margin-bottom: 5rem;">
+        <!-- Breadcrumb -->
+        <div style="margin-bottom: 1.5rem; font-size: 0.9rem; color: #64748b;">
+            <a th:href="@{/}" style="color: #64748b; text-decoration: none;" th:text="#{nav.home}">Trang chủ</a> 
+            <span>&rsaquo;</span> 
+            <a th:href="@{/ve-tham-quan}" style="color: #64748b; text-decoration: none;" th:text="#{nav.tours}">Tour & Vé</a>
+            <span>&rsaquo;</span> 
+            <span th:text="${ticket.title}" style="color: #0f172a; font-weight: 500;"></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem;">
+            
+            <!-- Cột trái: Hình ảnh và mô tả -->
+            <div>
+                <img th:if="${ticket.imageUrl}" th:src="${ticket.imageUrl}" style="width: 100%; height: 450px; object-fit: cover; border-radius: 16px; margin-bottom: 2rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);" alt="Image">
+                <div th:unless="${ticket.imageUrl}" style="width: 100%; height: 450px; background: #e2e8f0; border-radius: 16px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center;">No Image</div>
+                
+                <h1 th:text="${ticket.title}" style="margin-bottom: 1rem; font-size: 2.2rem; color: #0f172a; font-weight: 800; line-height: 1.3;"></h1>
+                
+                <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #475569; font-weight: 500; font-size: 0.95rem;">
+                        <span style="background: #e0f2fe; color: #0284c7; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">📍</span>
+                        <span th:text="${ticket.location}"></span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #475569; font-weight: 500; font-size: 0.95rem;">
+                        <span style="background: #fef3c7; color: #d97706; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">🎟️</span>
+                        <span th:text="${ticket.category.displayName}"></span>
+                    </div>
+                </div>
+
+                <div style="background: white; border-radius: 16px; padding: 2rem; border: 1px solid #e2e8f0;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem;" th:text="#{ticket.highlights}">Điểm nổi bật & Thông tin chi tiết</h3>
+                    <div style="color: #475569; line-height: 1.8; font-size: 1.05rem; white-space: pre-wrap;" th:text="${ticket.description}"></div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Khung đặt vé -->
+            <div>
+                <div style="background: white; border-radius: 16px; padding: 2rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); position: sticky; top: 20px;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;" th:text="#{ticket.options}">Tùy chọn & Đặt vé</h3>
+                    
+                    <form th:action="@{/dat-ve-tour}" method="get">
+                        <input type="hidden" name="ticketId" th:value="${ticket.id}">
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="font-weight: 600; color: #1e293b; margin-bottom: 0.75rem; display: block;" th:text="#{ticket.date}">Ngày tham gia</label>
+                            <input type="date" name="date" class="form-control" required th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" style="padding: 12px; border-radius: 8px;">
+                        </div>
+                        
+                        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc;">
+                            <!-- Người lớn -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                <div>
+                                    <div style="font-weight: 700; color: #0f172a;" th:text="#{ticket.adults}">Người lớn</div>
+                                    <div style="color: #f59e0b; font-weight: 700;" th:text="${@currencyFormatter.format(ticket.adultPrice, session.currency)}"></div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 5px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                                    <button type="button" onclick="decrement('adultCount')" style="width: 32px; height: 32px; border: none; background: #f1f5f9; border-radius: 6px; font-weight: bold; cursor: pointer; color: #475569;">-</button>
+                                    <input type="number" id="adultCount" name="adultCount" value="1" min="1" max="100" style="width: 40px; border: none; text-align: center; font-weight: bold; font-size: 1.1rem; padding: 0; outline: none;" readonly>
+                                    <button type="button" onclick="increment('adultCount')" style="width: 32px; height: 32px; border: none; background: #f1f5f9; border-radius: 6px; font-weight: bold; cursor: pointer; color: #475569;">+</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Trẻ em -->
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 700; color: #0f172a;" th:text="#{ticket.children}">Trẻ em</div>
+                                    <div style="color: #f59e0b; font-weight: 700;" th:text="${@currencyFormatter.format(ticket.childPrice, session.currency)}"></div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 5px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                                    <button type="button" onclick="decrement('childCount')" style="width: 32px; height: 32px; border: none; background: #f1f5f9; border-radius: 6px; font-weight: bold; cursor: pointer; color: #475569;">-</button>
+                                    <input type="number" id="childCount" name="childCount" value="0" min="0" max="100" style="width: 40px; border: none; text-align: center; font-weight: bold; font-size: 1.1rem; padding: 0; outline: none;" readonly>
+                                    <button type="button" onclick="increment('childCount')" style="width: 32px; height: 32px; border: none; background: #f1f5f9; border-radius: 6px; font-weight: bold; cursor: pointer; color: #475569;">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-top: 1rem; border-top: 1px dashed #cbd5e1;">
+                            <span style="font-size: 1.1rem; font-weight: 600; color: #475569;" th:text="#{ticket.subtotal}">Tạm tính:</span>
+                            <span id="totalPrice" style="font-size: 1.75rem; font-weight: 800; color: #10b981;">0 đ</span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);" th:text="#{btn.book_now}">Đặt ngay</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        let adultPrice = /*[[${ticket.adultPrice}]]*/ 0;
+        let childPrice = /*[[${ticket.childPrice}]]*/ 0;
+        let currency = /*[[${session.currency != null ? session.currency : 'VND'}]]*/ 'VND';
+        
+        let rate = currency === 'USD' ? 25000 : 1;
+        adultPrice = adultPrice / rate;
+        childPrice = childPrice / rate;
+
+        function increment(id) {
+            const el = document.getElementById(id);
+            el.value = parseInt(el.value) + 1;
+            calculate();
+        }
+
+        function decrement(id) {
+            const el = document.getElementById(id);
+            const min = id === 'adultCount' ? 1 : 0;
+            if (parseInt(el.value) > min) {
+                el.value = parseInt(el.value) - 1;
+                calculate();
+            }
+        }
+
+        function calculate() {
+            const adults = parseInt(document.getElementById('adultCount').value);
+            const children = parseInt(document.getElementById('childCount').value);
+            const total = (adults * adultPrice) + (children * childPrice);
+            
+            let displayStr = '';
+            if (currency === 'USD') {
+                displayStr = '$' + total.toFixed(2);
+            } else {
+                displayStr = total.toLocaleString('en-US') + ' đ';
+            }
+            document.getElementById('totalPrice').innerText = displayStr;
+        }
+
+        // Tính lần đầu
+        calculate();
+    </script>
+</main>
+</body>
+</html>

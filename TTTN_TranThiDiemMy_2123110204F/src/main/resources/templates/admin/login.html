@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="login-page">
+    <div class="login-box">
+        <h2>Admin Hotel</h2>
+        <p class="sub">Dang nhap quan tri - du lieu tu database</p>
+        <div th:if="${param.error}" class="alert alert-error">Sai email hoac mat khau</div>
+        <div th:if="${param.logout}" class="alert alert-success">Da dang xuat</div>
+        <form th:action="@{/admin/login}" method="post">
+            <div class="form-group"><label>Email</label><input type="email" name="username" class="form-control" required></div>
+            <div class="form-group"><label>Mat khau</label><input type="password" name="password" class="form-control" required></div>
+            <button type="submit" class="btn btn-primary" style="width:100%">Dang nhap Admin</button>
+        </form>
+        <p style="text-align:center;margin-top:1rem"><a th:href="@{/}">Ve trang chu</a></p>
+    </div>
+</div>
+</body>
+</html>

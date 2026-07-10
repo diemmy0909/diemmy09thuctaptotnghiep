@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="container page-layout">
+        <aside class="filter-panel">
+            <h3>Bộ lọc</h3>
+            <form th:action="@{/khach-san}" method="get">
+                <input type="hidden" name="checkIn" th:value="${checkIn}">
+                <input type="hidden" name="checkOut" th:value="${checkOut}">
+                <div class="filter-group"><label>Địa điểm</label><input name="location" th:value="${location}" class="form-control"></div>
+                <div class="filter-group"><label>Sao từ</label><input type="number" name="minStars" min="1" max="5" th:value="${minStars}" class="form-control"></div>
+                <div class="filter-group"><label>Sao đến</label><input type="number" name="maxStars" min="1" max="5" th:value="${maxStars}" class="form-control"></div>
+                <div class="filter-group"><label>Điểm đánh giá từ</label><input type="number" name="minRating" min="1" max="5" th:value="${minRating}" class="form-control"></div>
+                <div class="filter-group"><label>Khoảng cách (km)</label><input type="number" name="maxDistance" min="0" step="0.1" th:value="${maxDistance}" class="form-control" placeholder="Tối đa"></div>
+                <div class="filter-group"><label>Giá từ (đ)</label><input type="number" name="minPrice" th:value="${minPrice}" class="form-control"></div>
+                <div class="filter-group"><label>Giá đến (đ)</label><input type="number" name="maxPrice" th:value="${maxPrice}" class="form-control"></div>
+                <div class="filter-group"><label>Tiện nghi</label>
+                    <select name="amenityId" class="form-control">
+                        <option value="">Tất cả</option>
+                        <option th:each="a : ${amenities}" th:value="${a.id}" th:text="${a.name}" th:selected="${amenityId == a.id}"></option>
+                    </select>
+                </div>
+                <div class="filter-group"><label>Loại phòng</label>
+                    <select name="roomType" class="form-control">
+                        <option value="">Tất cả</option>
+                        <option th:each="t : ${roomTypes}" th:value="${t}" th:text="${t}" th:selected="${roomType == t}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%">Áp dụng</button>
+            </form>
+        </aside>
+        <div>
+            <h1 style="margin-bottom:1.5rem">Danh sách khách sạn</h1>
+            <div class="grid">
+                <a th:each="h : ${hotels}" th:href="@{/khach-san/{id}(id=${h.id},checkIn=${checkIn},checkOut=${checkOut})}" class="card" style="text-decoration:none;color:inherit">
+                    <div style="position:relative">
+                        <img th:if="${h.imageUrl}" th:src="${h.imageUrl}" class="card-img" alt="">
+                        <div th:unless="${h.imageUrl}" class="placeholder-img">H</div>
+                        <button type="button" class="fav-toggle-btn" 
+                                th:data-id="${h.id}" data-type="hotels"
+                                th:classappend="${favoriteHotelIds != null and favoriteHotelIds.contains(h.id)} ? 'active' : ''"
+                                style="position:absolute; top:10px; right:10px; border:none; background:rgba(255,255,255,0.8); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; transition:transform 0.2s;"
+                                onclick="toggleFav(event, this)">
+                            <span class="heart-icon" th:style="${favoriteHotelIds != null and favoriteHotelIds.contains(h.id)} ? 'color:#e11d48;' : 'color:#94a3b8;'">❤</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div style="display:flex; align-items:flex-start; gap:0.5rem; margin-bottom:0.75rem;">
+                            <span class="badge" style="flex-shrink:0; white-space:nowrap; padding:0.2rem 0.5rem; background:#fef3c7; color:#92400e; border-radius:4px; font-size:0.75rem; font-weight:600; line-height:1.2;" th:text="${h.starRating} + ' ⭐'"></span>
+                            <span style="color:#64748b; font-size:0.9rem; line-height:1.4;" th:text="${h.address}"></span>
+                        </div>
+                        <p style="color:#475569; font-size:0.95rem; margin-bottom:1rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" th:text="${h.description}"></p>
+                        <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;">
+                            <span th:each="a : ${h.amenities}" th:text="${a.name}" style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:12px; font-size:0.8rem;"></span>
+                        </div>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:auto;">
+                            <div>
+                                <p th:if="${hotelPrices != null and hotelPrices.containsKey(h.id)}" style="font-weight:bold; color:#047857; font-size:1.2rem; margin:0;">
+                                    Từ <span th:text="${#numbers.formatDecimal(hotelPrices.get(h.id), 0, 'COMMA', 0, 'POINT')}"></span> đ
+                                </p>
+                                <p th:unless="${hotelPrices != null and hotelPrices.containsKey(h.id)}" style="font-style:italic; color:#94a3b8; font-size:0.9rem; margin:0;">
+                                    Đang cập nhật giá
+                                </p>
+                            </div>
+                            <span class="btn btn-primary btn-sm">Xem chi tiết</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <p th:if="${#lists.isEmpty(hotels)}" style="text-align:center;color:#64748b;padding:2rem">Không tìm thấy khách sạn</p>
+            
+            <!-- Phân trang -->
+            <div th:if="${totalPages > 1}" style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:2.5rem;">
+                <!-- Nút Trang trước -->
+                <a th:if="${currentPage > 1}" 
+                   th:href="@{/khach-san(page=${currentPage - 1}, location=${location}, minStars=${minStars}, maxStars=${maxStars}, minPrice=${minPrice}, maxPrice=${maxPrice}, amenityId=${amenityId}, roomType=${roomType}, checkIn=${checkIn}, checkOut=${checkOut}, guests=${guests}, maxDistance=${maxDistance}, minRating=${minRating})}" 
+                   style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;"
+                   onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+                    &larr; Trang trước
+                </a>
+                <span th:if="${currentPage <= 1}" style="padding:8px 16px; border:1px solid #e2e8f0; border-radius:6px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; gap:5px; cursor:not-allowed;">
+                    &larr; Trang trước
+                </span>
+
+                <!-- Số trang -->
+                <div style="font-weight:600; color:#475569;">
+                    Trang <span th:text="${currentPage}" style="color:#0f172a; font-size:1.1rem;"></span> / <span th:text="${totalPages}"></span>
+                </div>
+
+                <!-- Nút Trang sau -->
+                <a th:if="${currentPage < totalPages}" 
+                   th:href="@{/khach-san(page=${currentPage + 1}, location=${location}, minStars=${minStars}, maxStars=${maxStars}, minPrice=${minPrice}, maxPrice=${maxPrice}, amenityId=${amenityId}, roomType=${roomType}, checkIn=${checkIn}, checkOut=${checkOut}, guests=${guests}, maxDistance=${maxDistance}, minRating=${minRating})}" 
+                   style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;"
+                   onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
+                    Trang sau &rarr;
+                </a>
+                <span th:if="${currentPage >= totalPages}" style="padding:8px 16px; border:1px solid #e2e8f0; border-radius:6px; background:#f8fafc; color:#94a3b8; font-weight:600; display:flex; align-items:center; gap:5px; cursor:not-allowed;">
+                    Trang sau &rarr;
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+</section>
+<script th:fragment="scripts">
+    async function toggleFav(event, btn) {
+        event.preventDefault(); // Ngăn link chuyển hướng
+        const id = btn.getAttribute('data-id');
+        const type = btn.getAttribute('data-type');
+        
+        try {
+            const response = await fetch(`/api/favorites/${type}/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const icon = btn.querySelector('.heart-icon');
+                if (data.status === 'added') {
+                    btn.classList.add('active');
+                    icon.style.color = '#e11d48';
+                } else if (data.status === 'removed') {
+                    btn.classList.remove('active');
+                    icon.style.color = '#94a3b8';
+                }
+            } else if (response.status === 401) {
+                window.location.href = '/dang-nhap';
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+</body>
+</html>

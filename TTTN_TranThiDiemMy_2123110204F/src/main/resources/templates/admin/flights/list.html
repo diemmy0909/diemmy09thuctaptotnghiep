@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="admin/layout :: layout(~{::main})">
+<head>
+    <title>Quản lý Chuyến bay</title>
+</head>
+<body>
+<main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2>Quản lý Chuyến bay</h2>
+        <a th:href="@{/admin/flights/create}" class="btn btn-primary">Thêm chuyến bay mới</a>
+    </div>
+
+    <table class="table" style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+        <thead style="background:#f8fafc; text-align:left;">
+            <tr>
+                <th style="padding:1rem;">Hãng bay</th>
+                <th style="padding:1rem;">Số hiệu</th>
+                <th style="padding:1rem;">Hành trình</th>
+                <th style="padding:1rem;">Khởi hành</th>
+                <th style="padding:1rem;">Hạ cánh</th>
+                <th style="padding:1rem;">Giá vé</th>
+                <th style="padding:1rem;">Số ghế</th>
+                <th style="padding:1rem;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="f : ${flights}" style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:1rem; font-weight:bold;" th:text="${f.airline}"></td>
+                <td style="padding:1rem; color:#64748b;" th:text="${f.flightNumber}"></td>
+                <td style="padding:1rem;" th:text="${f.departureCity + ' ➔ ' + f.arrivalCity}"></td>
+                <td style="padding:1rem;" th:text="${#temporals.format(f.departureTime, 'dd/MM/yyyy HH:mm')}"></td>
+                <td style="padding:1rem;" th:text="${#temporals.format(f.arrivalTime, 'dd/MM/yyyy HH:mm')}"></td>
+                <td style="padding:1rem; font-weight:bold; color:#047857;" th:text="${#numbers.formatDecimal(f.price,0,'COMMA',0,'POINT')} + ' đ'"></td>
+                <td style="padding:1rem;" th:text="${f.availableSeats}"></td>
+                <td style="padding:1rem;">
+                    <a th:href="@{/admin/flights/edit/{id}(id=${f.id})}" class="btn btn-sm btn-outline">Sửa</a>
+                    <a th:href="@{/admin/flights/delete/{id}(id=${f.id})}" class="btn btn-sm btn-accent" onclick="return confirm('Bạn có chắc muốn xóa chuyến bay này?')">Xóa</a>
+                </td>
+            </tr>
+            <tr th:if="${flights.isEmpty()}">
+                <td colspan="8" style="padding:2rem; text-align:center; color:#64748b;">Chưa có chuyến bay nào trong hệ thống.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div th:if="${totalPages > 1}" style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:2rem;">
+        <a th:if="${currentPage > 1}" 
+           th:href="@{/admin/flights(page=${currentPage - 1})}" 
+           style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;">
+            &larr; Trang trước
+        </a>
+        
+        <div style="font-weight:600; color:#475569;">
+            Trang <span th:text="${currentPage}" style="color:#0f172a; font-size:1.1rem;"></span> / <span th:text="${totalPages}"></span>
+        </div>
+
+        <a th:if="${currentPage < totalPages}" 
+           th:href="@{/admin/flights(page=${currentPage + 1})}" 
+           style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;">
+            Trang sau &rarr;
+        </a>
+    </div>
+</main>
+</body>
+</html>

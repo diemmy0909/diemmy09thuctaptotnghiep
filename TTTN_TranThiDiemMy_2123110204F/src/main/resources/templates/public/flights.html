@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="public/layout :: layout(~{::main})">
+<head>
+    <title>Chuyến bay</title>
+</head>
+<body>
+<main>
+    <div style="background: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center; background-size: cover; height: 500px; position: relative; border-radius: 16px; margin: 2rem auto; max-width: 1200px;">
+        <div style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5)); position: absolute; inset: 0; border-radius: 16px;"></div>
+        
+        <div style="position: absolute; top: 35%; left: 0; width: 100%; padding: 0 4rem; box-sizing: border-box;">
+            <h1 style="color: white; font-size: 2.2rem; font-weight: 700; margin-bottom: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Tìm & đặt vé máy bay giá rẻ, deal bay hấp dẫn cùng AluminumTravel</h1>
+            
+            <form action="/chuyen-bay" method="get" style="background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 1rem; background: #f1f5f9; padding: 0.25rem; border-radius: 24px;">
+                        <button type="button" style="background: transparent; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; color: #475569; cursor: pointer;">Một chiều</button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; align-items: flex-end;">
+                    <div style="flex: 1;">
+                        <label style="display: block; color: #64748b; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Từ</label>
+                        <select name="from" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; font-size: 1rem; font-weight: 600;">
+                            <option value="TP HCM (SGN)" th:selected="${from == 'TP HCM (SGN)'}">TP HCM (SGN)</option>
+                            <option value="Hà Nội (HAN)" th:selected="${from == 'Hà Nội (HAN)'}">Hà Nội (HAN)</option>
+                            <option value="Đà Nẵng (DAD)" th:selected="${from == 'Đà Nẵng (DAD)'}">Đà Nẵng (DAD)</option>
+                        </select>
+                    </div>
+                    
+                    <div style="background: #f1f5f9; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #059669; font-weight: bold; margin-bottom: 12px; z-index: 10; margin-left: -1rem; margin-right: -1rem; border: 2px solid white;">
+                        ⇄
+                    </div>
+                    
+                    <div style="flex: 1;">
+                        <label style="display: block; color: #64748b; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Đến</label>
+                        <select name="to" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; font-size: 1rem; font-weight: 600;">
+                            <option value="Hà Nội (HAN)" th:selected="${to == 'Hà Nội (HAN)'}">Hà Nội (HAN)</option>
+                            <option value="TP HCM (SGN)" th:selected="${to == 'TP HCM (SGN)'}">TP HCM (SGN)</option>
+                            <option value="Bangkok (BKK)" th:selected="${to == 'Bangkok (BKK)'}">Bangkok (BKK)</option>
+                        </select>
+                    </div>
+                    
+                    <div style="flex: 0.7;">
+                        <label style="display: block; color: #64748b; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Ngày khởi hành</label>
+                        <input type="date" name="date" th:value="${date}" required style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px; font-size: 1rem; font-weight: 600;">
+                    </div>
+                    
+                    <button type="submit" style="background: #10b981; color: white; border: none; border-radius: 8px; padding: 16px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 52px; flex: 0.8;">
+                        Tìm chuyến bay
+                    </button>
+                </div>
+                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #f1f5f9; font-size: 0.9rem;">
+                    <span>🧭 Cần gợi ý du lịch?</span> <a href="#" style="color: #059669; font-weight: 600; text-decoration: none;">Khám phá điểm đến bay ➔</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="container page-layout" style="margin-top: 6rem; margin-bottom: 5rem;">
+        <aside class="filter-panel">
+            <h3>Bộ lọc chuyến bay</h3>
+            <form action="/chuyen-bay" method="get">
+                <input type="hidden" name="from" th:value="${from}">
+                <input type="hidden" name="to" th:value="${to}">
+                <input type="hidden" name="date" th:value="${date}">
+                
+                <div class="filter-group">
+                    <label>Giờ cất cánh</label>
+                    <select name="timeOfDay" class="form-control">
+                        <option value="">Tất cả các giờ</option>
+                        <option value="morning" th:selected="${timeOfDay == 'morning'}">Sáng (05:00 - 12:00)</option>
+                        <option value="afternoon" th:selected="${timeOfDay == 'afternoon'}">Chiều (12:00 - 18:00)</option>
+                        <option value="evening" th:selected="${timeOfDay == 'evening'}">Tối (18:00 - 22:00)</option>
+                        <option value="night" th:selected="${timeOfDay == 'night'}">Đêm (22:00 - 05:00)</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Hãng bay</label>
+                    <select name="airline" class="form-control">
+                        <option value="">Tất cả các hãng</option>
+                        <option th:each="a : ${airlines}" th:value="${a}" th:text="${a}" th:selected="${airline == a}"></option>
+                    </select>
+                </div>
+                
+                <div class="filter-group"><label>Giá từ (đ)</label><input type="number" name="minPrice" th:value="${minPrice}" class="form-control" step="50000" min="0"></div>
+                <div class="filter-group"><label>Giá đến (đ)</label><input type="number" name="maxPrice" th:value="${maxPrice}" class="form-control" step="50000" min="0"></div>
+                
+                <button type="submit" class="btn btn-primary" style="width:100%">Áp dụng bộ lọc</button>
+            </form>
+        </aside>
+        
+        <div>
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Kết quả chuyến bay</h2>
+        
+        <div th:if="${flights.isEmpty()}" style="background: white; padding: 3rem; text-align: center; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+            <h3 style="color: #475569;">Không tìm thấy chuyến bay nào phù hợp</h3>
+            <p style="color: #64748b; margin-top: 0.5rem;">Vui lòng thử lại với ngày khởi hành hoặc điểm đến khác.</p>
+        </div>
+        
+        <div th:unless="${flights.isEmpty()}" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div th:each="f : ${flights}" style="background: white; border-radius: 12px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                <div style="display: flex; align-items: center; gap: 2rem; flex: 1;">
+                    <div style="width: 150px;">
+                        <div style="font-weight: 700; color: #0f172a; font-size: 1.1rem;" th:text="${f.airline}"></div>
+                        <div style="color: #64748b; font-size: 0.85rem;" th:text="${f.flightNumber}"></div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 1.5rem; flex: 1;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.25rem; font-weight: 700;" th:text="${#temporals.format(f.departureTime, 'HH:mm')}"></div>
+                            <div style="color: #64748b; font-size: 0.9rem;" th:text="${f.departureCity}"></div>
+                        </div>
+                        
+                        <div style="flex: 1; text-align: center; position: relative; color: #94a3b8;">
+                            <div style="border-bottom: 2px dashed #cbd5e1; width: 100%; position: absolute; top: 50%; z-index: 1;"></div>
+                            <span style="background: white; padding: 0 10px; position: relative; z-index: 2; font-size: 1.2rem;">✈️</span>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.25rem; font-weight: 700;" th:text="${#temporals.format(f.arrivalTime, 'HH:mm')}"></div>
+                            <div style="color: #64748b; font-size: 0.9rem;" th:text="${f.arrivalCity}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: right; width: 200px; display:flex; flex-direction:column; align-items:flex-end;">
+                    <div style="color: #f59e0b; font-weight: 700; font-size: 1.5rem; margin-bottom: 0.5rem;" th:text="${@currencyFormatter.format(f.price, session.currency)}"></div>
+                    <div style="display:flex; gap:0.5rem; width:100%;">
+                        <button type="button" class="fav-toggle-btn" 
+                                th:data-id="${f.id}" data-type="flights"
+                                th:classappend="${favoriteFlightIds != null and favoriteFlightIds.contains(f.id)} ? 'active' : ''"
+                                style="border:1px solid #cbd5e1; background:white; width:42px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; transition:all 0.2s;"
+                                onclick="toggleFav(event, this)">
+                            <span class="heart-icon" th:style="${favoriteFlightIds != null and favoriteFlightIds.contains(f.id)} ? 'color:#e11d48;' : 'color:#94a3b8;'">❤</span>
+                        </button>
+                        <a th:href="@{/dat-ve-may-bay(flightId=${f.id})}" style="flex:1; background: #10b981; color: white; border: none; border-radius: 6px; padding: 10px 0; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; box-sizing: border-box;">Chọn vé</a>
+                    </div>
+                    <div style="color: #10b981; font-size: 0.8rem; margin-top: 0.5rem;" th:text="'Còn ' + ${f.availableSeats} + ' ghế'"></div>
+                </div>
+            </div>
+            
+            <!-- Phân trang -->
+            <div th:if="${totalPages > 1}" style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:2.5rem;">
+                <a th:if="${currentPage > 1}" 
+                   th:href="@{/chuyen-bay(page=${currentPage - 1}, from=${from}, to=${to}, date=${date}, minPrice=${minPrice}, maxPrice=${maxPrice}, airline=${airline}, timeOfDay=${timeOfDay})}" 
+                   style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;">
+                    &larr; Trang trước
+                </a>
+                
+                <div style="font-weight:600; color:#475569;">
+                    Trang <span th:text="${currentPage}" style="color:#0f172a; font-size:1.1rem;"></span> / <span th:text="${totalPages}"></span>
+                </div>
+
+                <a th:if="${currentPage < totalPages}" 
+                   th:href="@{/chuyen-bay(page=${currentPage + 1}, from=${from}, to=${to}, date=${date}, minPrice=${minPrice}, maxPrice=${maxPrice}, airline=${airline}, timeOfDay=${timeOfDay})}" 
+                   style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#334155; text-decoration:none; font-weight:600; display:flex; align-items:center; gap:5px; transition:all 0.2s;">
+                    Trang sau &rarr;
+                </a>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
+<script th:fragment="scripts">
+    async function toggleFav(event, btn) {
+        event.preventDefault();
+        const id = btn.getAttribute('data-id');
+        const type = btn.getAttribute('data-type');
+        
+        try {
+            const response = await fetch(`/api/favorites/${type}/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const icon = btn.querySelector('.heart-icon');
+                if (data.status === 'added') {
+                    btn.classList.add('active');
+                    icon.style.color = '#e11d48';
+                } else if (data.status === 'removed') {
+                    btn.classList.remove('active');
+                    icon.style.color = '#94a3b8';
+                }
+            } else if (response.status === 401) {
+                window.location.href = '/dang-nhap';
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+</body>
+</html>

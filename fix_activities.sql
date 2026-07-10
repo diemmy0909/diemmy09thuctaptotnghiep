@@ -1,0 +1,13 @@
+USE datphongkhachsan;
+SET NAMES utf8mb4;
+DELETE FROM tour_activities;
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Khám Phá Phố Cổ Hội An', 'Dạo bước qua những con phố lung linh ánh đèn lồng, thưởng thức các món ăn đặc sản địa phương và cảm nhận vẻ đẹp hoài cổ của di sản thế giới Hội An.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Tour Tràng An - Bái Đính', 'Hành trình tâm linh và khám phá thiên nhiên kỳ vĩ tại quần thể danh thắng Tràng An và ngôi chùa lớn nhất Đông Nam Á - Bái Đính.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Lặn Ngắm San Hô Phú Quốc', 'Đắm mình trong làn nước trong xanh, khám phá thế giới đại dương đầy màu sắc với hàng ngàn loài san hô và sinh vật biển độc đáo.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Chinh Phục Đỉnh Fansipan', 'Vượt qua giới hạn bản thân, chạm tay vào Nóc nhà Đông Dương, ngắm nhìn toàn cảnh núi non hùng vĩ từ độ cao 3.143m.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Du Thuyền Trên Vịnh Hạ Long', 'Tận hưởng kỳ nghỉ sang trọng trên du thuyền 5 sao, thư giãn giữa hàng ngàn hòn đảo đá vôi kỳ thú của kỳ quan thiên nhiên thế giới.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Trải Nghiệm Đồi Cát Bay', 'Trượt cát, chạy xe địa hình và ngắm hoàng hôn tuyệt đẹp trên những cồn cát vàng óng ả mênh mông như sa mạc thu nhỏ.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Khám Phá Hang Sơn Đoòng', 'Chuyến thám hiểm kỳ thú vào hang động lớn nhất hành tinh, chiêm ngưỡng hệ sinh thái ngầm độc nhất vô nhị.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Tham Quan Hoàng Thành Huế', 'Tìm hiểu lịch sử hào hùng của triều đại phong kiến cuối cùng Việt Nam qua những công trình kiến trúc cung đình đồ sộ.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Chợ Nổi Cái Răng', 'Hòa mình vào không khí nhộn nhịp của phiên chợ trên sông lớn nhất miền Tây, thưởng thức trái cây tươi ngon ngay trên ghe thuyền.', NULL);
+INSERT INTO tour_activities (title, description, image_url) VALUES ('Cắm Trại Đà Lạt', 'Trải nghiệm đêm lửa trại giữa rừng thông mộng mơ, đón bình minh trong sương sớm và thưởng thức ly cà phê nóng hổi giữa tiết trời se lạnh.', NULL);

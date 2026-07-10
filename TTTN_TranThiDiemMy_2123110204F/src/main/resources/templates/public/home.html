@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="hero">
+        <div class="container">
+            <h1 th:text="#{home.hero.title}">T&#236;m kh&#225;ch s&#7841;n ho&#224;n h&#7843;o</h1>
+            <p th:text="#{home.hero.subtitle}">H&#224;ng ngh&#236;n ph&#242;ng ngh&#7881; v&#7899;i gi&#225; t&#7889;t</p>
+            <form class="search-box" th:action="@{/tim-kiem}" method="get">
+                <div><label th:text="#{search.location}">&#272;&#7883;a &#273;i&#7875;m</label><input type="text" name="location" th:placeholder="#{search.location.ph}"></div>
+                <div><label th:text="#{search.checkin}">Ng&#224;y nh&#7853;n</label><input type="date" name="checkIn"></div>
+                <div><label th:text="#{search.checkout}">Ng&#224;y tr&#7843;</label><input type="date" name="checkOut"></div>
+                <div><label th:text="#{search.guests}">S&#7889; ng&#432;&#7901;i</label>
+                    <select name="guests"><option value="2" selected>2</option><option value="3">3</option><option value="4">4+</option></select>
+                </div>
+                <div><label>&nbsp;</label><button type="submit" class="btn btn-primary" th:text="#{home.hero.search_btn}">T&#236;m ki&#7871;m</button></div>
+            </form>
+        </div>
+    </div>
+
+    <section class="section container" th:if="${!#lists.isEmpty(promotions)}">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: #10b981; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">🎁</span>
+            <span th:text="#{home.promos.title}">Khuyến mãi</span>
+        </h2>
+        <div class="grid">
+            <a th:href="@{/khuyen-mai}" class="card" th:each="p : ${promotions}" style="text-decoration: none; color: inherit; display: block;">
+                <div class="card-body">
+                    <span class="badge-promo" th:text="${p.code}"></span>
+                    <h3 class="card-title" th:text="${p.description}"></h3>
+                    <p th:if="${p.discountPercent}"><span th:text="#{home.promos.discount}">Giảm</span> <span th:text="${p.discountPercent} + '%'"></span></p>
+                    <p th:if="${p.discountAmount}"><span th:text="#{home.promos.discount}">Giảm</span> <span th:text="${#numbers.formatDecimal(p.discountAmount,0,'COMMA',0,'POINT')} + 'đ'"></span></p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="section container">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: #10b981; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">🏨</span>
+            <span th:text="#{home.section.hotels}">Nơi Nghỉ Ngơi Lí Tưởng Cho Chuyến Đi Của Bạn</span>
+        </h2>
+        <div class="grid">
+            <a th:each="h : ${featuredHotels}" th:href="@{/khach-san/{id}(id=${h.id})}" class="card" style="text-decoration:none;color:inherit">
+                <img th:if="${h.imageUrl}" th:src="${h.imageUrl}" class="card-img" alt="">
+                <div th:unless="${h.imageUrl}" class="placeholder-img">H</div>
+                <div class="card-body">
+                    <h3 class="card-title" th:text="${h.name}"></h3>
+                    <p class="card-meta" th:text="${h.address}"></p>
+                    <p class="stars" th:text="${h.starRating} + ' ⭐'"></p>
+                    <p th:if="${hotelPrices != null and hotelPrices.containsKey(h.id)}" style="margin-top:auto; padding-top: 1rem; font-weight:bold; color:#047857;">
+                        <span th:text="#{lbl.price_from}">Từ</span> <span th:text="${@currencyFormatter.format(hotelPrices.get(h.id), session.currency)}"></span>
+                    </p>
+                </div>
+            </a>
+        </div>
+        <p style="text-align:center;margin-top:1.5rem"><a th:href="@{/khach-san}" class="btn btn-outline" th:text="#{btn.view_all}">Xem t&#7845;t c&#7843;</a></p>
+    </section>
+    
+    <section class="section container" th:if="${!#lists.isEmpty(tickets)}">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: #10b981; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">🎫</span>
+            <span th:text="#{home.section.tours}">Tour & Vé tham quan</span>
+        </h2>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+            <a th:each="t : ${tickets}" th:href="@{/ve-tham-quan/{id}(id=${t.id})}" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; text-decoration: none; color: inherit; display: flex; flex-direction: column;">
+                <div style="position: relative; padding-top: 60%;">
+                    <img th:if="${t.imageUrl}" th:src="${t.imageUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="">
+                    <div th:unless="${t.imageUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image</div>
+                    <span style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;" th:text="${t.category.displayName}"></span>
+                </div>
+                
+                <div style="padding: 1.25rem; flex: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem 0; line-height: 1.4;" th:text="${t.title}"></h3>
+                    <p style="color: #64748b; font-size: 0.9rem; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.25rem;">
+                        📍 <span th:text="${t.location}"></span>
+                    </p>
+                    <div style="margin-top: auto;">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: #10b981;">
+                            <span th:text="${@currencyFormatter.format(t.adultPrice, session.currency)}"></span>
+                        </div>
+                        <div style="color: #94a3b8; font-size: 0.85rem;" th:text="#{lbl.pax}">mỗi người lớn</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <p style="text-align:center;margin-top:2rem;">
+            <a th:href="@{/ve-tham-quan}" style="display:inline-block; border: 1px solid #10b981; color: #10b981; padding: 10px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#10b981';this.style.color='white'" onmouseout="this.style.background='transparent';this.style.color='#10b981'" th:text="#{btn.view_all_tours}">Xem tất cả Tour & Vé</a>
+        </p>
+    </section>
+    
+    <section class="section container" th:if="${!#lists.isEmpty(tourActivities)}">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: #10b981; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">✈️</span>
+            <span th:text="#{home.activities.title}">Các Điểm Du Lịch Đáng Trải Nghiệm</span>
+        </h2>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+            <a th:each="act : ${tourActivities}" th:href="@{/hoat-dong-vui-choi/{id}(id=${act.id})}" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: relative; text-decoration: none; display: flex; flex-direction: column;">
+                <img th:if="${act.imageUrl}" th:src="${act.imageUrl}" style="width: 100%; height: 160px; object-fit: cover;">
+                <div th:unless="${act.imageUrl}" style="width: 100%; height: 160px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">Chưa có ảnh</div>
+                
+                <div style="padding: 1rem; flex: 1; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.05rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem 0; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;" th:text="${act.title}"></h3>
+                    <p style="font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;" th:text="${act.description}"></p>
+                </div>
+            </a>
+        </div>
+        <p style="text-align:center;margin-top:2rem;">
+            <a th:href="@{/hoat-dong-vui-choi}" style="display:inline-block; border: 1px solid #10b981; color: #10b981; padding: 10px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s;" onmouseover="this.style.background='#10b981';this.style.color='white'" onmouseout="this.style.background='transparent';this.style.color='#10b981'" th:text="#{btn.view_all}">Xem tất cả</a>
+        </p>
+    </section>
+
+</section>
+</body>
+</html>
