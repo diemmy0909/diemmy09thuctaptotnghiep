@@ -12,7 +12,6 @@
                 <div class="filter-group"><label>Sao từ</label><input type="number" name="minStars" min="1" max="5" th:value="${minStars}" class="form-control"></div>
                 <div class="filter-group"><label>Sao đến</label><input type="number" name="maxStars" min="1" max="5" th:value="${maxStars}" class="form-control"></div>
                 <div class="filter-group"><label>Điểm đánh giá từ</label><input type="number" name="minRating" min="1" max="5" th:value="${minRating}" class="form-control"></div>
-                <div class="filter-group"><label>Khoảng cách (km)</label><input type="number" name="maxDistance" min="0" step="0.1" th:value="${maxDistance}" class="form-control" placeholder="Tối đa"></div>
                 <div class="filter-group"><label>Giá từ (đ)</label><input type="number" name="minPrice" th:value="${minPrice}" class="form-control"></div>
                 <div class="filter-group"><label>Giá đến (đ)</label><input type="number" name="maxPrice" th:value="${maxPrice}" class="form-control"></div>
                 <div class="filter-group"><label>Tiện nghi</label>
@@ -37,13 +36,6 @@
                     <div style="position:relative">
                         <img th:if="${h.imageUrl}" th:src="${h.imageUrl}" class="card-img" alt="">
                         <div th:unless="${h.imageUrl}" class="placeholder-img">H</div>
-                        <button type="button" class="fav-toggle-btn" 
-                                th:data-id="${h.id}" data-type="hotels"
-                                th:classappend="${favoriteHotelIds != null and favoriteHotelIds.contains(h.id)} ? 'active' : ''"
-                                style="position:absolute; top:10px; right:10px; border:none; background:rgba(255,255,255,0.8); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; transition:transform 0.2s;"
-                                onclick="toggleFav(event, this)">
-                            <span class="heart-icon" th:style="${favoriteHotelIds != null and favoriteHotelIds.contains(h.id)} ? 'color:#e11d48;' : 'color:#94a3b8;'">❤</span>
-                        </button>
                     </div>
                     <div class="card-body">
                         <div style="display:flex; align-items:flex-start; gap:0.5rem; margin-bottom:0.75rem;">
@@ -104,35 +96,5 @@
     </div>
 </section>
 </section>
-<script th:fragment="scripts">
-    async function toggleFav(event, btn) {
-        event.preventDefault(); // Ngăn link chuyển hướng
-        const id = btn.getAttribute('data-id');
-        const type = btn.getAttribute('data-type');
-        
-        try {
-            const response = await fetch(`/api/favorites/${type}/${id}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                const icon = btn.querySelector('.heart-icon');
-                if (data.status === 'added') {
-                    btn.classList.add('active');
-                    icon.style.color = '#e11d48';
-                } else if (data.status === 'removed') {
-                    btn.classList.remove('active');
-                    icon.style.color = '#94a3b8';
-                }
-            } else if (response.status === 401) {
-                window.location.href = '/dang-nhap';
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-</script>
 </body>
 </html>

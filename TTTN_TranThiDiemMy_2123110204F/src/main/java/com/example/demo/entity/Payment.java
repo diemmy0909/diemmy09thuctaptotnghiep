@@ -23,8 +23,16 @@ public class Payment {
     private String paymentCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id", nullable = false)
+    @JoinColumn(name = "booking_id", nullable = true)
     private Booking booking;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight_booking_id", nullable = true)
+    private FlightBooking flightBooking;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_booking_id", nullable = true)
+    private TicketBooking ticketBooking;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;

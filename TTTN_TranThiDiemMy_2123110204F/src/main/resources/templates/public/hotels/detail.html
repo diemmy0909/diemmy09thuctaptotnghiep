@@ -9,8 +9,10 @@
         </div>
         <div class="detail-grid">
             <div>
-                <h1 th:text="${hotel.name}"></h1>
-                <p class="stars" th:text="${hotel.starRating} + ' sao'"></p>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <h1 th:text="${hotel.name}" style="margin:0;"></h1>
+                </div>
+                <p class="stars" th:text="${hotel.starRating} + ' sao'" style="margin-top:0.5rem;"></p>
                 <p th:text="${hotel.address}" style="color:#64748b;margin:0.5rem 0"></p>
                 <p th:text="${hotel.description}"></p>
                 <h3 style="margin-top:1.5rem" th:text="#{hotel.amenities}">Tiện nghi</h3>
@@ -34,72 +36,14 @@
                     </div>
                     <a th:href="@{/phong/{id}(id=${r.id})}" class="btn btn-primary btn-sm">Xem phòng</a>
                 </div>
-                <h3 style="margin-top:1.5rem" th:text="#{hotel.reviews}">Đánh giá</h3>
-                
-                <!-- Hiển thị thông báo (nếu có) -->
-                <div th:if="${successMessage}" class="alert" style="background:#dcfce7;color:#166534;padding:1rem;border-radius:8px;margin-bottom:1rem;" th:text="${successMessage}"></div>
-                <div th:if="${errorMessage}" class="alert" style="background:#fee2e2;color:#991b1b;padding:1rem;border-radius:8px;margin-bottom:1rem;" th:text="${errorMessage}"></div>
-
-                <!-- Form Đánh giá (chỉ hiện khi đã đăng nhập) -->
-                <div th:if="${#authorization.expression('isAuthenticated()')}" class="card" style="padding:1.5rem; margin-bottom:1.5rem; background:#f8fafc; border:1px solid #e2e8f0;">
-                    <h4 style="margin-top:0; margin-bottom:1rem; font-size:1.1rem;" th:text="#{hotel.write_review}">Viết đánh giá của bạn</h4>
-                    <form th:action="@{/danh-gia/khach-san}" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="hotelId" th:value="${hotel.id}">
-                        
-                        <div style="margin-bottom:1rem;">
-                            <label style="display:block; font-weight:600; margin-bottom:0.5rem;" th:text="#{hotel.rating}">Số sao:</label>
-                            <select name="rating" class="form-control" style="width:100px;" required>
-                                <option value="5">5 Sao (Tuyệt vời)</option>
-                                <option value="4">4 Sao (Tốt)</option>
-                                <option value="3">3 Sao (Khá)</option>
-                                <option value="2">2 Sao (Tệ)</option>
-                                <option value="1">1 Sao (Rất tệ)</option>
-                            </select>
-                        </div>
-                        
-                        <div style="margin-bottom:1rem;">
-                            <label style="display:block; font-weight:600; margin-bottom:0.5rem;" th:text="#{hotel.comment}">Bình luận:</label>
-                            <textarea name="comment" class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm của bạn..." required></textarea>
-                        </div>
-                        
-                        <div style="margin-bottom:1rem;">
-                            <label style="display:block; font-weight:600; margin-bottom:0.5rem;" th:text="#{hotel.image}">Đính kèm hình ảnh (tùy chọn):</label>
-                            <input type="file" name="image" class="form-control" accept="image/*" style="padding: 0.4rem; font-size: 0.9rem;">
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem;" th:text="#{hotel.submit_review}">Gửi đánh giá</button>
-                    </form>
-                </div>
-                
-                <div th:unless="${#authorization.expression('isAuthenticated()')}" class="card" style="padding:1.5rem; margin-bottom:1.5rem; background:#f8fafc; text-align:center;">
-                    <p style="margin:0; color:#64748b;" th:text="#{hotel.login_review}">Vui lòng <a th:href="@{/dang-nhap}" style="color:#0284c7; font-weight:600;">đăng nhập</a> để viết đánh giá.</p>
-                </div>
-
-                <!-- Danh sách Đánh giá -->
-                <div th:each="rv : ${reviews}" class="review-card" style="margin-bottom:1rem; padding:1.25rem; border:1px solid #e2e8f0; border-radius:8px; background:#fff;">
-                    <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
-                        <div style="width:40px; height:40px; background:#e2e8f0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#64748b;" th:text="${#strings.substring(rv.user.fullName, 0, 1)}"></div>
-                        <div>
-                            <strong th:text="${rv.user.fullName}" style="display:block; font-size:1rem; color:#0f172a;"></strong>
-                            <div style="color:#fbbf24; font-size:0.9rem;">
-                                <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= rv.rating ? '★' : '☆'}" th:style="${i <= rv.rating ? '' : 'color:#cbd5e1;'}"></span>
-                                <span style="color:#94a3b8; font-size:0.8rem; margin-left:0.5rem;" th:text="${#temporals.format(rv.createdAt, 'dd/MM/yyyy')}"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <p th:text="${rv.comment}" style="color:#334155; line-height:1.5; margin:0.5rem 0;"></p>
-                    <div th:if="${rv.imageUrl}" style="margin-top:0.75rem;">
-                        <img th:src="${rv.imageUrl}" alt="Review Image" style="max-width:200px; max-height:200px; border-radius:8px; object-fit:cover; border:1px solid #e2e8f0;">
-                    </div>
-                </div>
-                
-                <p th:if="${#lists.isEmpty(reviews)}" style="color:#64748b; font-style:italic;" th:text="#{hotel.no_reviews}">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!</p>
             </div>
             <div>
                 <div class="card" style="padding:1.25rem">
                     <p class="card-price"><span th:text="#{lbl.price_from}">Từ</span> <span th:text="${@currencyFormatter.format(minPrice, session.currency)}"></span> <span th:text="#{lbl.night}">/đêm</span></p>
                     <a th:href="@{/khach-san}" class="btn btn-outline" style="width:100%;margin-top:1rem;text-align:center" th:text="#{btn.back}">Quay lại</a>
                 </div>
+
+
                 <h4 style="margin:1.5rem 0 0.5rem" th:text="#{hotel.map}">Bản đồ</h4>
                 <div id="map" style="height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1;"></div>
                 

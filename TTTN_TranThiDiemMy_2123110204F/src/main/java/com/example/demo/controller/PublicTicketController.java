@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.example.demo.repository.FavoriteTicketRepository;
 import com.example.demo.repository.UserRepository;
 
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 public class PublicTicketController {
 
     private final TicketRepository ticketRepository;
-    private final FavoriteTicketRepository favoriteTicketRepository;
     private final UserRepository userRepository;
 
     @GetMapping
@@ -53,15 +51,7 @@ public class PublicTicketController {
                 ? allTickets.subList(start, end) 
                 : new ArrayList<>();
 
-        List<Long> favoriteTicketIds = new ArrayList<>();
-        if (userDetails != null) {
-            userRepository.findByEmail(userDetails.getUsername()).ifPresent(user -> {
-                favoriteTicketIds.addAll(favoriteTicketRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
-                        .stream().map(f -> f.getTicket().getId()).toList());
-            });
-        }
 
-        model.addAttribute("favoriteTicketIds", favoriteTicketIds);
         model.addAttribute("tickets", pagedTickets);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -74,15 +64,7 @@ public class PublicTicketController {
     public String detail(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         Ticket ticket = ticketRepository.findById(id).orElseThrow();
         
-        List<Long> favoriteTicketIds = new ArrayList<>();
-        if (userDetails != null) {
-            userRepository.findByEmail(userDetails.getUsername()).ifPresent(user -> {
-                favoriteTicketIds.addAll(favoriteTicketRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
-                        .stream().map(f -> f.getTicket().getId()).toList());
-            });
-        }
-        
-        model.addAttribute("favoriteTicketIds", favoriteTicketIds);
+
         model.addAttribute("ticket", ticket);
         return "public/tickets/detail";
     }

@@ -22,11 +22,10 @@ public class DataInitializer implements CommandLineRunner {
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
     private final PaymentRepository paymentRepository;
-    private final ReviewRepository reviewRepository;
+
     private final PromotionRepository promotionRepository;
     private final FlightRepository flightRepository;
     private final TourActivityRepository tourActivityRepository;
-    private final CarRepository carRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -266,27 +265,6 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
         }
 
-        if (carRepository.count() == 0) {
-            carRepository.save(Car.builder().name("VinFast VF8").type("SUV").transmission("Số tự động").seats(5).pricePerDay(new BigDecimal("1200000")).imageUrl("https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80").provider("AVIS").build());
-            carRepository.save(Car.builder().name("Toyota Fortuner").type("SUV").transmission("Số tự động").seats(7).pricePerDay(new BigDecimal("1500000")).imageUrl("https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80").provider("Hertz").build());
-            carRepository.save(Car.builder().name("Honda City").type("Sedan").transmission("Số tự động").seats(5).pricePerDay(new BigDecimal("800000")).imageUrl("https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80").provider("SMART").build());
-            carRepository.save(Car.builder().name("Kia Carnival").type("MPV").transmission("Số tự động").seats(7).pricePerDay(new BigDecimal("2000000")).imageUrl("https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80").provider("AVIS").build());
-            carRepository.save(Car.builder().name("Mazda 3").type("Sedan").transmission("Số tự động").seats(5).pricePerDay(new BigDecimal("900000")).imageUrl("https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80").provider("Hertz").build());
-            carRepository.save(Car.builder().name("Ford Ranger").type("Bán tải").transmission("Số sàn").seats(5).pricePerDay(new BigDecimal("1100000")).imageUrl("https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80").provider("TRAC").build());
-        }
-        
-        // Auto-fix broken images for existing cars in database
-        for (Car c : carRepository.findAll()) {
-            if (c.getImageUrl() != null && c.getImageUrl().contains("1621007947382")) {
-                c.setImageUrl("https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80");
-                carRepository.save(c);
-            }
-            if (c.getImageUrl() != null && c.getImageUrl().contains("1590362891991")) {
-                c.setImageUrl("https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80");
-                carRepository.save(c);
-            }
-        }
-
         if (!promotionRepository.existsByCode("SUMMER2026")) {
             promotionRepository.save(Promotion.builder()
                     .code("SUMMER2026")
@@ -417,11 +395,7 @@ public class DataInitializer implements CommandLineRunner {
                 .status(PaymentStatus.PENDING)
                 .build());
 
-        reviewRepository.save(Review.builder()
-                .hotel(hotel).user(customer).rating(5)
-                .comment("Khách sạn rất đẹp, nhân viên thân thiện!")
-                .approved(false)
-                .build());
+
 
     }
 }

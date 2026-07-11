@@ -33,7 +33,7 @@ public class PublicFlightBookingController {
         }
         
         if (user == null) {
-            return "redirect:/login";
+            return "redirect:/dang-nhap";
         }
 
         model.addAttribute("flight", flight);
@@ -72,8 +72,7 @@ public class PublicFlightBookingController {
             flightRepository.save(flight);
         }
 
-        // Hiện tại dùng chung trang thanh toán của Hotel (dựa vào ID booking chung hoặc phải tạo trang thanh toán riêng). 
-        // Để đơn giản, điều hướng về lịch sử mua hàng hoặc trang cảm ơn.
-        return "redirect:/lich-su-dat-ve";
+        // Chuyển hướng tới cổng thanh toán
+        return "redirect:/thanh-toan-may-bay/" + booking.getId();
     }
 }

@@ -3,10 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.RoomType;
 import com.example.demo.repository.AmenityRepository;
 import com.example.demo.repository.HotelRepository;
-import com.example.demo.repository.ReviewRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.FavoriteHotelRepository;
 import com.example.demo.entity.User;
 import com.example.demo.service.HotelSearchService;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +27,9 @@ public class PublicHotelController {
 
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
-    private final ReviewRepository reviewRepository;
     private final AmenityRepository amenityRepository;
     private final HotelSearchService hotelSearchService;
     private final UserRepository userRepository;
-    private final FavoriteHotelRepository favoriteHotelRepository;
 
     @GetMapping
     public String list(@RequestParam(required = false) String location,
@@ -87,15 +83,6 @@ public class PublicHotelController {
         model.addAttribute("hotels", pagedHotels);
         model.addAttribute("hotelPrices", hotelPrices);
         
-        List<Long> favoriteHotelIds = new java.util.ArrayList<>();
-        if (userDetails != null) {
-            userRepository.findByEmail(userDetails.getUsername()).ifPresent(user -> {
-                favoriteHotelIds.addAll(favoriteHotelRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
-                        .stream().map(f -> f.getHotel().getId()).toList());
-            });
-        }
-        model.addAttribute("favoriteHotelIds", favoriteHotelIds);
-        
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("amenities", amenityRepository.findAll());
@@ -117,12 +104,12 @@ public class PublicHotelController {
     }
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         var hotel = hotelRepository.findById(id).orElseThrow();
         model.addAttribute("hotel", hotel);
         model.addAttribute("rooms", roomRepository.findByHotelId(id));
-        model.addAttribute("reviews", reviewRepository.findByHotelIdAndApprovedTrueOrderByCreatedAtDesc(id));
         model.addAttribute("minPrice", hotelSearchService.getMinPrice(hotel));
+        
         return "public/hotels/detail";
     }
 }

@@ -8,7 +8,11 @@
             <tbody>
             <tr th:each="p : ${payments}">
                 <td th:text="${p.paymentCode}"></td>
-                <td th:text="${p.booking.bookingCode}"></td>
+                <td>
+                    <span th:if="${p.booking != null}" th:text="'Khách sạn: ' + ${p.booking.bookingCode}"></span>
+                    <span th:if="${p.flightBooking != null}" th:text="'Máy bay: ' + ${p.flightBooking.bookingCode}"></span>
+                    <span th:if="${p.ticketBooking != null}" th:text="'Tour/Vé: ' + ${p.ticketBooking.bookingCode}"></span>
+                </td>
                 <td th:text="${#numbers.formatDecimal(p.amount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                 <td th:text="${p.method}"></td>
                 <td>

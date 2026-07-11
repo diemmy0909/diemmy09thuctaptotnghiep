@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::main})}">
 <head>
-    <title>Lịch sử đặt vé & Tour</title>
+    <title>Lịch sử đặt vé máy bay</title>
 </head>
 <body>
 <main>
@@ -15,13 +15,13 @@
             <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
                 <a th:href="@{/ho-so}" class="nav-link" style="padding: 10px; border-radius: 8px; text-decoration: none; color: #475569;">👤 Thông tin cá nhân</a>
                 <a th:href="@{/lich-su-dat-phong}" class="nav-link" style="padding: 10px; border-radius: 8px; text-decoration: none; color: #475569;">🏨 Lịch sử đặt phòng</a>
-                <a th:href="@{/lich-su-dat-ve}" class="nav-link" style="padding: 10px; border-radius: 8px; text-decoration: none; color: #475569;">✈️ Lịch sử chuyến bay</a>
-                <a th:href="@{/lich-su-dat-ve-tour}" class="nav-link" style="padding: 10px; border-radius: 8px; text-decoration: none; color: #10b981; font-weight: bold; background: #f1f5f9;">🎟️ Lịch sử vé & tour</a>
+                <a th:href="@{/lich-su-dat-ve}" class="nav-link" style="padding: 10px; border-radius: 8px; text-decoration: none; color: #10b981; font-weight: bold; background: #f1f5f9;">✈️ Lịch sử chuyến bay</a>
+                <a th:href="@{/lich-su-dat-ve-tour}" class="nav-link" style="padding: 10px; border-radius: 8px; text-decoration: none; color: #475569;">🎟️ Lịch sử vé & tour</a>
             </nav>
         </aside>
 
         <div>
-            <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Lịch sử đặt vé & Tour tham quan</h2>
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Lịch sử đặt vé máy bay</h2>
             
             <div class="card">
                 <div style="overflow-x:auto">
@@ -29,35 +29,39 @@
                         <thead>
                             <tr>
                                 <th>Mã đơn</th>
-                                <th>Dịch vụ</th>
-                                <th>Ngày tham gia</th>
+                                <th>Chuyến bay</th>
+                                <th>Khởi hành</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="b : ${ticketBookings}">
+                            <tr th:each="b : ${flightBookings}">
                                 <td th:text="${b.bookingCode}"></td>
                                 <td>
-                                    <strong th:text="${b.ticket.title}"></strong><br>
-                                    <small th:text="${b.adultCount} + ' người lớn, ' + ${b.childCount} + ' trẻ em'"></small>
+                                    <strong th:text="${b.flight.airline} + ' - ' + ${b.flight.flightNumber}"></strong><br>
+                                    <small th:text="${b.flight.departureCity} + ' ✈️ ' + ${b.flight.arrivalCity}"></small><br>
+                                    <small style="color:#64748b;" th:text="${b.passengers} + ' hành khách'"></small>
                                 </td>
-                                <td th:text="${#temporals.format(b.participationDate, 'dd/MM/yyyy')}"></td>
+                                <td>
+                                    <div th:text="${#temporals.format(b.flight.departureTime, 'HH:mm')}"></div>
+                                    <small style="color:#64748b;" th:text="${#temporals.format(b.flight.departureTime, 'dd/MM/yyyy')}"></small>
+                                </td>
                                 <td th:text="${#numbers.formatDecimal(b.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                                 <td>
                                     <span th:class="'badge badge-' + ${b.status.name().toLowerCase()}" th:text="${b.status}"></span>
                                 </td>
                                 <td>
                                     <form th:if="${b.status.name() == 'PENDING' or b.status.name() == 'CONFIRMED'}" 
-                                          th:action="@{/lich-su-dat-ve-tour/{id}/cancel(id=${b.id})}" method="post" 
+                                          th:action="@{/lich-su-dat-ve/{id}/cancel(id=${b.id})}" method="post" 
                                           onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn này?');">
                                         <button type="submit" class="btn btn-danger btn-sm">Hủy</button>
                                     </form>
                                     <span th:unless="${b.status.name() == 'PENDING' or b.status.name() == 'CONFIRMED'}" style="color:#94a3b8; font-size:0.9rem;">-</span>
                                 </td>
                             </tr>
-                            <tr th:if="${#lists.isEmpty(ticketBookings)}">
+                            <tr th:if="${#lists.isEmpty(flightBookings)}">
                                 <td colspan="6" style="text-align:center; padding: 2rem;">Bạn chưa đặt dịch vụ nào.</td>
                             </tr>
                         </tbody>

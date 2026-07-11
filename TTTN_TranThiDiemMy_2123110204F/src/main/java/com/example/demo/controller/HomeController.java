@@ -8,12 +8,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import com.example.demo.entity.User;
+import com.example.demo.entity.TourActivity;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,10 +31,10 @@ public class HomeController {
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final PromotionRepository promotionRepository;
-    private final ReviewRepository reviewRepository;
     private final TourActivityRepository tourActivityRepository;
     private final TicketRepository ticketRepository;
     private final HotelSearchService hotelSearchService;
+    private final UserRepository userRepository;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -67,28 +76,33 @@ public class HomeController {
                                  @RequestParam(required = false) String checkIn,
                                  @RequestParam(required = false) String checkOut,
                                  @RequestParam(required = false) Integer guests) {
-        StringBuilder url = new StringBuilder("/khach-san?location=").append(location != null ? location : "");
+        StringBuilder url = new StringBuilder("/khach-san?");
+        if (location != null && !location.isEmpty()) {
+            url.append("location=").append(URLEncoder.encode(location, StandardCharsets.UTF_8));
+        }
         if (checkIn != null) url.append("&checkIn=").append(checkIn);
         if (checkOut != null) url.append("&checkOut=").append(checkOut);
         if (guests != null) url.append("&guests=").append(guests);
-        return "redirect:" + url;
+        return "redirect:" + url.toString();
     }
 
     @GetMapping("/hoat-dong-vui-choi")
-    public String tourActivities(@org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int page, Model model) {
+    public String tourActivities(@org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int page, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         model.addAttribute("pageTitle", "Các Điểm Du Lịch Đáng Trải Nghiệm");
         model.addAttribute("activityPage", tourActivityRepository.findAll(org.springframework.data.domain.PageRequest.of(page, 8)));
+        
         return "public/tour-activities";
     }
 
     @GetMapping("/hoat-dong-vui-choi/{id}")
-    public String tourActivityDetail(@org.springframework.web.bind.annotation.PathVariable Long id, Model model) {
+    public String tourActivityDetail(@org.springframework.web.bind.annotation.PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         com.example.demo.entity.TourActivity activity = tourActivityRepository.findById(id).orElse(null);
         if (activity == null) {
             return "redirect:/hoat-dong-vui-choi";
         }
         model.addAttribute("pageTitle", activity.getTitle());
         model.addAttribute("activity", activity);
+        
         return "public/tour-activity-detail";
     }
 }

@@ -35,7 +35,6 @@ public class PublicTicketBookingController {
         
         var booking = ticketBookingService.createBooking(ticketId, user.getId(), date, adultCount, childCount);
         
-        ra.addFlashAttribute("success", "Đặt dịch vụ thành công! Mã đơn: " + booking.getBookingCode());
-        return "redirect:/lich-su-dat-ve-tour";
+        return "redirect:/thanh-toan-tour/" + booking.getId();
     }
 }

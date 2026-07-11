@@ -17,7 +17,7 @@ public class HotelSearchService {
 
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
-    private final com.example.demo.repository.ReviewRepository reviewRepository;
+
 
     public List<Hotel> search(String location, Integer minStars, Integer maxStars,
                                BigDecimal minPrice, BigDecimal maxPrice,
@@ -32,12 +32,7 @@ public class HotelSearchService {
                 .filter(h -> maxStars == null || (h.getStarRating() != null && h.getStarRating() <= maxStars))
                 .filter(h -> amenityId == null || h.getAmenities().stream().anyMatch(a -> a.getId().equals(amenityId)))
                 .filter(h -> maxDistance == null || (h.getDistanceToCenter() != null && h.getDistanceToCenter() <= maxDistance))
-                .filter(h -> {
-                    if (minRating == null) return true;
-                    double avg = reviewRepository.findByHotelIdAndApprovedTrueOrderByCreatedAtDesc(h.getId()).stream()
-                            .mapToInt(Review::getRating).average().orElse(0.0);
-                    return avg >= minRating;
-                })
+
                 .filter(h -> matchesPriceAndRoomType(h, minPrice, maxPrice, roomType))
                 .sorted(Comparator.comparing(Hotel::getStarRating, Comparator.nullsLast(Comparator.reverseOrder())))
                 .toList();

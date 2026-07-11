@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{public/layout :: layout(~{::section})}">
+<body>
+<section th:fragment="section">
+    <div class="form-page" style="max-width: 600px;">
+        <h2>Thanh toán Tour & Vé tham quan</h2>
+        <p th:text="'Mã đặt chỗ: ' + ${booking.bookingCode}"></p>
+        
+        <div style="background:#f8fafc; padding:1.5rem; border-radius:8px; margin:1.5rem 0;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                <span>Tổng tiền vé:</span>
+                <span th:text="${#numbers.formatDecimal(booking.totalAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
+            </div>
+            
+            <hr style="border-top:1px solid #e2e8f0; margin:1rem 0;">
+            
+            <div style="display:flex; justify-content:space-between; font-size:1.25rem; font-weight:bold;">
+                <span>Thành tiền:</span>
+                <span class="card-price" th:text="${#numbers.formatDecimal(finalAmount,0,'COMMA',0,'POINT')} + ' đ'" style="margin:0;"></span>
+            </div>
+        </div>
+
+        <form th:action="@{/thanh-toan-tour/{id}(id=${booking.id})}" method="post" style="margin-top:1.5rem">
+            
+            <div th:if="${rewardPoints > 0}" style="margin-bottom:1.5rem; background:#fffbf1; border:1px solid #fde68a; padding:1rem; border-radius:8px;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                    <input type="checkbox" name="usePoints" value="true" style="width:auto;">
+                    <span>Sử dụng <strong><span th:text="${#numbers.formatDecimal(rewardPoints,0,'COMMA',0,'POINT')}"></span> điểm</strong> tích lũy để giảm <strong style="color:#d97706;" th:text="${#numbers.formatDecimal(rewardPoints,0,'COMMA',0,'POINT')} + ' đ'"></strong></span>
+                </label>
+            </div>
+
+            <h3 style="margin-top:0">Phương thức thanh toán</h3>
+            <div class="payment-options">
+                <label class="payment-option" th:each="m : ${methods}">
+                    <input type="radio" name="method" th:value="${m}" th:checked="${m.name() == 'CASH'}" required>
+                    <span th:text="${m}"></span>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.5rem; padding:1rem;">Xác nhận Thanh toán</button>
+        </form>
+    </div>
+</section>
+</body>
+</html>

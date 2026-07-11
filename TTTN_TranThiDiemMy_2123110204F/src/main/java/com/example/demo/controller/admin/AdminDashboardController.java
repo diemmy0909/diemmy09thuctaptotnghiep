@@ -19,7 +19,6 @@ public class AdminDashboardController {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
-    private final ReviewRepository reviewRepository;
 
     @GetMapping({"", "/"})
     public String dashboard(Model model) {
@@ -30,7 +29,6 @@ public class AdminDashboardController {
         model.addAttribute("bookingCount", bookingRepository.count());
         model.addAttribute("customerCount", userRepository.findByRole(Role.CUSTOMER).size());
         model.addAttribute("pendingBookings", bookingRepository.countByStatus(BookingStatus.PENDING));
-        model.addAttribute("pendingReviews", reviewRepository.findByApprovedFalseOrderByCreatedAtDesc().size());
         model.addAttribute("paymentCount", paymentRepository.count());
         return "admin/dashboard";
     }

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.repository.FlightRepository;
-import com.example.demo.repository.FavoriteFlightRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FlightSearchService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ public class PublicFlightController {
 
     private final FlightSearchService flightSearchService;
     private final FlightRepository flightRepository;
-    private final FavoriteFlightRepository favoriteFlightRepository;
     private final UserRepository userRepository;
 
     @GetMapping
@@ -57,15 +55,7 @@ public class PublicFlightController {
                 ? allFlights.subList(start, end) 
                 : java.util.Collections.emptyList();
                 
-        List<Long> favoriteFlightIds = new java.util.ArrayList<>();
-        if (userDetails != null) {
-            userRepository.findByEmail(userDetails.getUsername()).ifPresent(user -> {
-                favoriteFlightIds.addAll(favoriteFlightRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
-                        .stream().map(f -> f.getFlight().getId()).toList());
-            });
-        }
-        model.addAttribute("favoriteFlightIds", favoriteFlightIds);
-                
+
         model.addAttribute("flights", pagedFlights);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
