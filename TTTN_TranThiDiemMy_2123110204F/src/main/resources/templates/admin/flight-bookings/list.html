@@ -32,11 +32,24 @@
                             <strong th:text="${b.flight.airline}"></strong><br>
                             <span th:text="${b.flight.departureCity} + ' - ' + ${b.flight.arrivalCity}"></span><br>
                             <small th:text="${#temporals.format(b.flight.departureTime, 'dd/MM/yyyy HH:mm')}"></small>
+                            <th:block th:if="${b.returnFlight != null}">
+                                <div style="margin-top:0.5rem; padding-top:0.5rem; border-top:1px dashed #cbd5e1;">
+                                    <strong th:text="${b.returnFlight.airline}"></strong> (Về)<br>
+                                    <span th:text="${b.returnFlight.departureCity} + ' - ' + ${b.returnFlight.arrivalCity}"></span><br>
+                                    <small th:text="${#temporals.format(b.returnFlight.departureTime, 'dd/MM/yyyy HH:mm')}"></small>
+                                </div>
+                            </th:block>
                         </td>
                         <td>
                             <span th:text="${b.passengers} + ' khách'"></span><br>
                             <small th:if="${b.extraBaggageKg > 0}" th:text="'+' + ${b.extraBaggageKg} + 'kg hành lý'"></small><br>
-                            <small th:if="${b.seatNumbers != null and !b.seatNumbers.isBlank()}" th:text="'Ghế: ' + ${b.seatNumbers}"></small>
+                            <small th:if="${b.seatNumbers != null and !b.seatNumbers.isBlank()}" th:text="'Ghế (đi): ' + ${b.seatNumbers}"></small><br th:if="${b.seatNumbers != null and !b.seatNumbers.isBlank()}">
+                            <small th:if="${b.mealOption != null and !b.mealOption.isBlank()}" th:text="'Suất ăn (đi): ' + ${b.mealOption}"></small><br th:if="${b.mealOption != null and !b.mealOption.isBlank()}">
+                            
+                            <th:block th:if="${b.returnFlight != null}">
+                                <small th:if="${b.returnSeatNumbers != null and !b.returnSeatNumbers.isBlank()}" th:text="'Ghế (về): ' + ${b.returnSeatNumbers}"></small><br th:if="${b.returnSeatNumbers != null and !b.returnSeatNumbers.isBlank()}">
+                                <small th:if="${b.returnMealOption != null and !b.returnMealOption.isBlank()}" th:text="'Suất ăn (về): ' + ${b.returnMealOption}"></small>
+                            </th:block>
                         </td>
                         <td th:text="${#numbers.formatDecimal(b.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                         <td>

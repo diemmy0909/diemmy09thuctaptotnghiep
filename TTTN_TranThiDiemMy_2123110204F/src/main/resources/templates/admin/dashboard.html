@@ -34,11 +34,54 @@
                 <p style="color:#64748b; margin-bottom:0.2rem;">Tổng doanh thu (VNĐ)</p>
                 <h2 id="totalRevenueStr" style="margin:0; color:#0f172a;">Đang tải...</h2>
             </div>
-            <div style="padding:1rem; background:#f8fafc; border-radius:8px;">
-                <p style="color:#64748b; margin-bottom:0.2rem; font-size:0.9rem;" sec:authorize="hasRole('PARTNER')">Chiết khấu sàn (10%)</p>
-                <p style="color:#64748b; margin-bottom:0.2rem; font-size:0.9rem;" sec:authorize="hasRole('SUPER_ADMIN')">Hoa hồng sàn (10%)</p>
-                <h3 id="commissionStr" style="margin:0; color:#10b981;">Đang tải...</h3>
-            </div>
+
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        <div class="card">
+            <h3 style="margin-top:0; margin-bottom: 1rem;">Doanh thu Khách sạn</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Khách sạn</th>
+                        <th>Doanh thu</th>
+                    </tr>
+                </thead>
+                <tbody id="hotelRevenueBody">
+                    <tr><td colspan="2" style="text-align: center;">Đang tải...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h3 style="margin-top:0; margin-bottom: 1rem;">Doanh thu Hãng bay</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Hãng bay</th>
+                        <th>Doanh thu</th>
+                    </tr>
+                </thead>
+                <tbody id="flightRevenueBody">
+                    <tr><td colspan="2" style="text-align: center;">Đang tải...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h3 style="margin-top:0; margin-bottom: 1rem;">Doanh thu Vé tham quan</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Tên Vé</th>
+                        <th>Doanh thu</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketRevenueBody">
+                    <tr><td colspan="2" style="text-align: center;">Đang tải...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -49,7 +92,54 @@
                 .then(data => {
                     // Update text
                     document.getElementById('totalRevenueStr').innerText = new Intl.NumberFormat('vi-VN').format(data.totalRevenue);
-                    document.getElementById('commissionStr').innerText = new Intl.NumberFormat('vi-VN').format(data.commission);
+
+                    // Populate hotel revenue table
+                    const tbody = document.getElementById('hotelRevenueBody');
+                    if (data.hotelRevenue && data.hotelRevenue.length > 0) {
+                        tbody.innerHTML = '';
+                        data.hotelRevenue.forEach(hotel => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${hotel.hotelName}</td>
+                                <td style="font-weight: 600; color: #10b981;">${new Intl.NumberFormat('vi-VN').format(hotel.revenue)} ₫</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #64748b;">Chưa có dữ liệu</td></tr>';
+                    }
+
+                    // Populate flight revenue table
+                    const flightTbody = document.getElementById('flightRevenueBody');
+                    if (data.flightRevenue && data.flightRevenue.length > 0) {
+                        flightTbody.innerHTML = '';
+                        data.flightRevenue.forEach(flight => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${flight.airline}</td>
+                                <td style="font-weight: 600; color: #10b981;">${new Intl.NumberFormat('vi-VN').format(flight.revenue)} ₫</td>
+                            `;
+                            flightTbody.appendChild(tr);
+                        });
+                    } else {
+                        flightTbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #64748b;">Chưa có dữ liệu</td></tr>';
+                    }
+
+                    // Populate ticket revenue table
+                    const ticketTbody = document.getElementById('ticketRevenueBody');
+                    if (data.ticketRevenue && data.ticketRevenue.length > 0) {
+                        ticketTbody.innerHTML = '';
+                        data.ticketRevenue.forEach(ticket => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${ticket.ticketTitle}</td>
+                                <td style="font-weight: 600; color: #10b981;">${new Intl.NumberFormat('vi-VN').format(ticket.revenue)} ₫</td>
+                            `;
+                            ticketTbody.appendChild(tr);
+                        });
+                    } else {
+                        ticketTbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #64748b;">Chưa có dữ liệu</td></tr>';
+                    }
 
                     // Draw chart
                     const ctx = document.getElementById('revenueChart').getContext('2d');

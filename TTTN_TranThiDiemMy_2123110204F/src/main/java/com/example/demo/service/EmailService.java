@@ -21,6 +21,10 @@ public class EmailService {
                 "Vui lòng không chia sẻ mã này cho bất kỳ ai. Mã OTP có hiệu lực trong 10 phút.\n\n" +
                 "Trân trọng,\nĐội ngũ hỗ trợ.");
         
+        System.out.println("==========================================");
+        System.out.println("MÃ OTP CỦA BẠN LÀ: " + otp);
+        System.out.println("==========================================");
+        
         try {
             mailSender.send(message);
         } catch (Exception e) {

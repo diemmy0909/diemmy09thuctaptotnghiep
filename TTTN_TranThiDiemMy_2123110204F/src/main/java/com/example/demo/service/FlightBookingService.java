@@ -21,16 +21,35 @@ public class FlightBookingService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final NotificationService notificationService;
+    private final com.example.demo.repository.MealRepository mealRepository;
 
-    public BigDecimal calculateTotal(Flight flight, int passengers, int extraBaggageKg) {
-        BigDecimal baseTotal = flight.getPrice().multiply(BigDecimal.valueOf(passengers));
+    public BigDecimal calculateTotal(Flight flight, int adults, int children, int infants, int extraBaggageKg, String seatClass, String mealOption) {
+        BigDecimal ticketPrice = "BUSINESS".equalsIgnoreCase(seatClass) && flight.getBusinessPrice() != null 
+                ? flight.getBusinessPrice() : flight.getPrice();
+        BigDecimal baseAdultTotal = ticketPrice.multiply(BigDecimal.valueOf(adults));
+        BigDecimal baseChildTotal = ticketPrice.multiply(BigDecimal.valueOf(children)).multiply(new BigDecimal("0.75"));
+        BigDecimal baseInfantTotal = ticketPrice.multiply(BigDecimal.valueOf(infants)).multiply(new BigDecimal("0.10"));
+        BigDecimal baseTotal = baseAdultTotal.add(baseChildTotal).add(baseInfantTotal);
         // Giả sử giá hành lý mua thêm là 10.000 VNĐ cho mỗi kg (ví dụ)
         BigDecimal baggagePrice = BigDecimal.valueOf(extraBaggageKg * 10000L);
-        return baseTotal.add(baggagePrice);
+        
+        BigDecimal mealPrice = BigDecimal.ZERO;
+        if (mealOption != null && !mealOption.isEmpty()) {
+            var mealOpt = mealRepository.findByName(mealOption);
+            if (mealOpt.isPresent()) {
+                mealPrice = mealOpt.get().getPrice();
+            }
+        }
+        
+        mealPrice = mealPrice.multiply(BigDecimal.valueOf(adults + children));
+        
+        return baseTotal.add(baggagePrice).add(mealPrice);
     }
 
     @Transactional
-    public FlightBooking createBooking(Long flightId, Long userId, int passengers, String seatNumbers, int extraBaggageKg) {
+    public FlightBooking createBooking(Long flightId, Long userId, int adults, int children, int infants, 
+                                       String[] passengerTypes, String[] passengerNames, String[] passengerIdCards,
+                                       int extraBaggageKg, String seatClass, String mealOption) {
         Flight flight = flightRepository.findById(flightId).orElseThrow();
         User customer = userRepository.findById(userId).orElseThrow();
 
@@ -38,12 +57,30 @@ public class FlightBookingService {
                 .bookingCode("FBK" + System.currentTimeMillis())
                 .customer(customer)
                 .flight(flight)
-                .passengers(passengers)
-                .seatNumbers(seatNumbers)
+                .adults(adults)
+                .children(children)
+                .infants(infants)
                 .extraBaggageKg(extraBaggageKg)
-                .totalAmount(calculateTotal(flight, passengers, extraBaggageKg))
+                .seatClass(seatClass)
+                .mealOption(mealOption)
+                .totalAmount(calculateTotal(flight, adults, children, infants, extraBaggageKg, seatClass, mealOption))
                 .status(BookingStatus.PENDING)
                 .build();
+                
+        // Create passengers
+        java.util.List<FlightPassenger> flightPassengers = new java.util.ArrayList<>();
+        if (passengerTypes != null) {
+            for (int i = 0; i < passengerTypes.length; i++) {
+                FlightPassenger fp = FlightPassenger.builder()
+                    .flightBooking(booking)
+                    .passengerType(passengerTypes[i])
+                    .fullName(passengerNames[i])
+                    .idCard(passengerIdCards[i])
+                    .build();
+                flightPassengers.add(fp);
+            }
+        }
+        booking.setFlightPassengers(flightPassengers);
 
         return flightBookingRepository.save(booking);
     }

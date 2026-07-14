@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="public/layout :: layout(~{::main})">
+<head>
+    <title>Chi tiết chuyến bay</title>
+</head>
+<body>
+<main>
+    <div class="container page-layout" style="margin-top: 3rem; margin-bottom: 5rem; display: flex; gap: 2rem;">
+        
+        <div style="flex: 2;">
+            <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem;">Chi tiết chuyến bay</h2>
+            
+            <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="display:flex; align-items:center; gap:1rem;">
+                        <img th:if="${flight.airlineLogo != null && !flight.airlineLogo.isEmpty()}" th:src="${flight.airlineLogo}" style="height:50px; width:50px; object-fit:contain; border-radius:50%; border:1px solid #e2e8f0;">
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; font-size: 1.25rem;" th:text="${flight.airline}"></div>
+                            <div style="color: #64748b;">
+                                <span th:text="'Chuyến bay: ' + ${flight.flightNumber}"></span>
+                                <span th:if="${flight.aircraftModel != null}" th:text="' | Tàu bay: ' + ${flight.aircraftModel}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: #64748b; font-size: 0.9rem;">Thời gian bay dự kiến</div>
+                        <div style="font-weight: 600; color: #0f172a;" th:text="${#temporals.format(flight.departureTime, 'dd/MM/yyyy')}"></div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                    <div style="text-align: center; width: 30%;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #0f172a;" th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"></div>
+                        <div style="color: #64748b; font-size: 1.1rem; margin-top: 0.5rem; font-weight:600;" th:text="${flight.departureCity}"></div>
+                        <div style="color: #94a3b8; font-size: 0.85rem;" th:if="${flight.departureAirport != null}" th:text="${flight.departureAirport}"></div>
+                    </div>
+                    
+                    <div style="flex: 1; text-align: center; position: relative;">
+                        <div style="border-bottom: 2px dashed #cbd5e1; width: 100%; position: absolute; top: 50%; z-index: 1;"></div>
+                        <span style="background: white; padding: 0 15px; position: relative; z-index: 2; font-size: 1.5rem; color: #0ea5e9;">✈️</span>
+                        <div style="color: #10b981; font-size: 0.85rem; font-weight:600; margin-top:10px;" th:if="${flight.status == 'ON_TIME'}">Đúng giờ</div>
+                        <div style="color: #f59e0b; font-size: 0.85rem; font-weight:600; margin-top:10px;" th:if="${flight.status == 'DELAYED'}">Bị trễ</div>
+                    </div>
+                    
+                    <div style="text-align: center; width: 30%;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #0f172a;" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+                        <div style="color: #64748b; font-size: 1.1rem; margin-top: 0.5rem; font-weight:600;" th:text="${flight.arrivalCity}"></div>
+                        <div style="color: #94a3b8; font-size: 0.85rem;" th:if="${flight.arrivalAirport != null}" th:text="${flight.arrivalAirport}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <form th:action="${tripType == 'ROUND_TRIP' ? '/chuyen-bay/chuyen-ve' : (tripType == 'ROUND_TRIP_RETURN' ? '/dat-ve-may-bay' : '/dat-ve-may-bay')}" method="get" id="bookingForm">
+                
+                <th:block th:if="${tripType == 'ROUND_TRIP'}">
+                    <input type="hidden" name="outboundFlightId" th:value="${flight.id}">
+                    <input type="hidden" name="returnDate" th:value="${returnDate}">
+                    <input type="hidden" name="returnFrom" th:value="${returnFrom}">
+                    <input type="hidden" name="returnTo" th:value="${returnTo}">
+                </th:block>
+                <th:block th:if="${tripType == 'ROUND_TRIP_RETURN'}">
+                    <input type="hidden" name="outboundFlightId" th:value="${outboundFlightId}">
+                    <input type="hidden" name="outboundSeatClass" th:value="${outboundSeatClass}">
+                    <input type="hidden" name="outboundMealOption" th:value="${outboundMealOption}">
+                    <input type="hidden" name="returnFlightId" th:value="${flight.id}">
+                </th:block>
+                
+                <input type="hidden" name="flightId" th:value="${flight.id}" th:unless="${tripType == 'ROUND_TRIP' || tripType == 'ROUND_TRIP_RETURN'}">
+                
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">1. Chọn hạng ghế</h3>
+                
+                <div id="flightData" style="display:none;" th:data-price="${flight.price}" th:data-business-price="${flight.businessPrice != null ? flight.businessPrice : 0}"></div>
+                
+                <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
+                    <!-- Economy Class -->
+                    <label style="flex: 1; cursor: pointer;">
+                        <input type="radio" th:name="${tripType == 'ROUND_TRIP' ? 'outboundSeatClass' : (tripType == 'ROUND_TRIP_RETURN' ? 'returnSeatClass' : 'seatClass')}" value="ECONOMY" checked style="display: none;" onchange="updateTotal()">
+                        <div class="class-card" style="border: 2px solid #10b981; border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.2s;">
+                            <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: #0f172a;">Phổ thông (Economy)</div>
+                            <div style="color: #f59e0b; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;" th:text="${@currencyFormatter.format(flight.price, session.currency)}"></div>
+                            <div style="color: #64748b; font-size: 0.9rem;">
+                                Còn <strong style="color: #10b981;" th:text="${flight.availableSeats}"></strong> ghế trống
+                            </div>
+                            <ul style="text-align: left; margin-top: 1rem; padding-left: 1.5rem; color: #475569; font-size: 0.9rem;">
+                                <li>Hành lý xách tay 7kg</li>
+                                <li>Ghế ngồi tiêu chuẩn</li>
+                                <li>Không hoàn vé</li>
+                            </ul>
+                        </div>
+                    </label>
+
+                    <!-- Business Class -->
+                    <label style="flex: 1; cursor: pointer;">
+                        <input type="radio" th:name="${tripType == 'ROUND_TRIP' ? 'outboundSeatClass' : (tripType == 'ROUND_TRIP_RETURN' ? 'returnSeatClass' : 'seatClass')}" value="BUSINESS" style="display: none;" onchange="updateTotal()">
+                        <div class="class-card" style="border: 1px solid #cbd5e1; border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.2s; background: white;">
+                            <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: #0f172a;">Thương gia (Business)</div>
+                            <div style="color: #f59e0b; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;" 
+                                 th:text="${flight.businessPrice != null ? @currencyFormatter.format(flight.businessPrice, session.currency) : 'Không hỗ trợ'}"></div>
+                            <div style="color: #64748b; font-size: 0.9rem;">
+                                Còn <strong style="color: #10b981;" th:text="${flight.availableBusinessSeats != null ? flight.availableBusinessSeats : 0}"></strong> ghế trống
+                            </div>
+                            <ul style="text-align: left; margin-top: 1rem; padding-left: 1.5rem; color: #475569; font-size: 0.9rem;">
+                                <li>Hành lý xách tay 10kg + Ký gửi 30kg</li>
+                                <li>Phòng chờ thương gia</li>
+                                <li>Ghế ngồi rộng rãi, ngả 180 độ</li>
+                            </ul>
+                        </div>
+                    </label>
+                </div>
+
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">2. Chọn suất ăn (Tùy chọn)</h3>
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 2rem;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 10px; border: 1px solid #f1f5f9; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <input type="radio" th:name="${tripType == 'ROUND_TRIP' ? 'outboundMealOption' : (tripType == 'ROUND_TRIP_RETURN' ? 'returnMealOption' : 'mealOption')}" value="" checked onchange="updateTotal()">
+                                <span>Không suất ăn</span>
+                            </div>
+                            <span style="font-weight: 600;">+ 0 ₫</span>
+                        </label>
+                        <label th:each="m : ${meals}" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 10px; border: 1px solid #f1f5f9; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <input type="radio" th:name="${tripType == 'ROUND_TRIP' ? 'outboundMealOption' : (tripType == 'ROUND_TRIP_RETURN' ? 'returnMealOption' : 'mealOption')}" th:value="${m.name}" th:data-price="${m.price}" onchange="updateTotal()">
+                                <span th:text="${m.name}"></span>
+                            </div>
+                            <span style="font-weight: 600;" th:text="'+ ' + ${#numbers.formatDecimal(m.price,0,'COMMA',0,'POINT')} + ' đ'"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" style="width: 100%; background: #10b981; color: white; border: none; padding: 1rem; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; margin-top: 1rem;">
+                    Tiếp tục đặt vé
+                </button>
+            </form>
+        </div>
+        
+        <div style="flex: 1;">
+            <!-- Cột bên phải để trống nhằm giữ nguyên bố cục -->
+        </div>
+    </div>
+    
+<script>
+    function updateTotal() {
+        // Find the radios by checking attribute name containing seatClass
+        const classRadios = document.querySelectorAll('input[type="radio"]');
+        const cards = document.querySelectorAll('.class-card');
+        
+        let classIndex = 0;
+        classRadios.forEach((radio) => {
+            if (radio.value === 'ECONOMY' || radio.value === 'BUSINESS') {
+                if(radio.checked) {
+                    cards[classIndex].style.border = "2px solid #10b981";
+                    cards[classIndex].style.background = "#f0fdf4";
+                } else {
+                    cards[classIndex].style.border = "1px solid #cbd5e1";
+                    cards[classIndex].style.background = "white";
+                }
+                classIndex++;
+            }
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTotal();
+    });
+</script>
+</main>
+</body>
+</html>

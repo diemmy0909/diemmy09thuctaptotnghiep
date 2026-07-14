@@ -7,8 +7,35 @@
         <p th:text="'Mã đặt chỗ: ' + ${booking.bookingCode}"></p>
         
         <div style="background:#f8fafc; padding:1.5rem; border-radius:8px; margin:1.5rem 0;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; color:#475569; font-size:0.95rem;">
+                <span>Số ghế đã chọn (Chuyến đi):</span>
+                <strong th:text="${booking.seatNumbers != null && !booking.seatNumbers.isEmpty() ? booking.seatNumbers : 'Không có'}"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; color:#475569; font-size:0.95rem;">
+                <span>Suất ăn đã đặt (Chuyến đi):</span>
+                <strong th:text="${booking.mealOption != null && !booking.mealOption.isEmpty() ? booking.mealOption : 'Không suất ăn'}"></strong>
+            </div>
+            
+            <th:block th:if="${booking.returnFlight != null}">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; color:#475569; font-size:0.95rem;">
+                    <span>Số ghế (Chuyến về):</span>
+                    <strong th:text="${booking.returnSeatNumbers != null && !booking.returnSeatNumbers.isEmpty() ? booking.returnSeatNumbers : 'Không có'}"></strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; color:#475569; font-size:0.95rem;">
+                    <span>Suất ăn (Chuyến về):</span>
+                    <strong th:text="${booking.returnMealOption != null && !booking.returnMealOption.isEmpty() ? booking.returnMealOption : 'Không suất ăn'}"></strong>
+                </div>
+            </th:block>
+            
             <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-                <span>Tổng tiền vé & hành lý:</span>
+                <span>Hành lý mua thêm:</span>
+                <span th:text="${booking.extraBaggageKg} + ' Kg'"></span>
+            </div>
+            
+            <hr style="border-top:1px dashed #cbd5e1; margin:1rem 0;">
+            
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                <span>Tổng tiền vé & dịch vụ:</span>
                 <span th:text="${#numbers.formatDecimal(booking.totalAmount,0,'COMMA',0,'POINT')} + ' đ'"></span>
             </div>
             

@@ -10,7 +10,7 @@
         <a th:href="@{/admin/flights}" class="btn btn-outline">Quay lại</a>
     </div>
 
-    <form th:action="@{${flight.id == null ? '/admin/flights/create' : '/admin/flights/edit/' + flight.id}}" th:object="${flight}" method="post" class="form-page" style="max-width:800px;">
+    <form th:action="@{${flight.id == null ? '/admin/flights/create' : '/admin/flights/edit/' + flight.id}}" th:object="${flight}" method="post" enctype="multipart/form-data" class="form-page" style="max-width:800px;">
         
         <div class="form-row">
             <div class="form-group">
@@ -23,14 +23,70 @@
             </div>
         </div>
 
+        <div class="form-group" style="margin-bottom:1rem;">
+            <label>Logo Hãng (Tùy chọn)</label>
+            <div style="margin-bottom: 0.5rem;">
+                <img id="imagePreview" 
+                     th:src="${flight.airlineLogo != null && !flight.airlineLogo.isEmpty() ? flight.airlineLogo : '#'}" 
+                     style="height: 50px; object-fit: contain; border-radius: 4px; border: 1px solid #e2e8f0;"
+                     th:styleappend="${flight.airlineLogo == null || flight.airlineLogo.isEmpty() ? 'display: none;' : ''}">
+            </div>
+            <input type="file" name="imageFile" accept="image/*" class="form-control" onchange="previewImage(this)">
+        </div>
+
+        <script>
+            function previewImage(input) {
+                var preview = document.getElementById('imagePreview');
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.src = '#';
+                    preview.style.display = 'none';
+                }
+            }
+        </script>
+
         <div class="form-row">
             <div class="form-group">
-                <label>Điểm đi</label>
-                <input type="text" th:field="*{departureCity}" class="form-control" placeholder="VD: TP HCM (SGN)" required>
+                <label>Loại tàu bay</label>
+                <input type="text" th:field="*{aircraftModel}" class="form-control" placeholder="VD: Airbus A321">
             </div>
             <div class="form-group">
-                <label>Điểm đến</label>
-                <input type="text" th:field="*{arrivalCity}" class="form-control" placeholder="VD: Hà Nội (HAN)" required>
+                <label>Trạng thái chuyến bay</label>
+                <select th:field="*{status}" class="form-control">
+                    <option value="SCHEDULED">Đang lên lịch (Scheduled)</option>
+                    <option value="ON_TIME">Đúng giờ (On-time)</option>
+                    <option value="DELAYED">Bị trễ (Delayed)</option>
+                    <option value="CANCELLED">Đã hủy (Cancelled)</option>
+                    <option value="COMPLETED">Đã hoàn thành (Completed)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Tỉnh/Thành phố đi</label>
+                <input type="text" th:field="*{departureCity}" class="form-control" placeholder="VD: TP HCM" required>
+            </div>
+            <div class="form-group">
+                <label>Sân bay đi</label>
+                <input type="text" th:field="*{departureAirport}" class="form-control" placeholder="VD: Tân Sơn Nhất (SGN)">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Tỉnh/Thành phố đến</label>
+                <input type="text" th:field="*{arrivalCity}" class="form-control" placeholder="VD: Hà Nội" required>
+            </div>
+            <div class="form-group">
+                <label>Sân bay đến</label>
+                <input type="text" th:field="*{arrivalAirport}" class="form-control" placeholder="VD: Nội Bài (HAN)">
             </div>
         </div>
 
@@ -47,12 +103,23 @@
 
         <div class="form-row">
             <div class="form-group">
-                <label>Giá vé (VNĐ)</label>
+                <label>Giá vé Phổ thông (VNĐ)</label>
                 <input type="number" th:field="*{price}" class="form-control" placeholder="VD: 1500000" min="0" required>
             </div>
             <div class="form-group">
-                <label>Số lượng ghế trống</label>
+                <label>Số ghế Phổ thông trống</label>
                 <input type="number" th:field="*{availableSeats}" class="form-control" placeholder="VD: 120" min="0" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Giá vé Thương gia (VNĐ)</label>
+                <input type="number" th:field="*{businessPrice}" class="form-control" placeholder="VD: 3500000" min="0">
+            </div>
+            <div class="form-group">
+                <label>Số ghế Thương gia trống</label>
+                <input type="number" th:field="*{availableBusinessSeats}" class="form-control" placeholder="VD: 20" min="0">
             </div>
         </div>
 

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface FlightBookingRepository extends JpaRepository<FlightBooking, Long> {
     List<FlightBooking> findByCustomerIdOrderByCreatedAtDesc(Long customerId);
+    List<FlightBooking> findByFlight_IdAndStatusNot(Long flightId, com.example.demo.entity.BookingStatus status);
 }

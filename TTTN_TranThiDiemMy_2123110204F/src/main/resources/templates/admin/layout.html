@@ -16,6 +16,7 @@
             <a th:href="@{/admin}" th:classappend="${activeMenu == 'dashboard'} ? 'active'">📊 Tổng quan</a>
             <a th:href="@{/admin/hotels}" th:classappend="${activeMenu == 'hotels'} ? 'active'">🏨 Khách sạn</a>
             <a th:href="@{/admin/flights}" th:classappend="${activeMenu == 'flights'} ? 'active'">✈️ Chuyến bay</a>
+            <a th:href="@{/admin/meals}" th:classappend="${activeMenu == 'meals'} ? 'active'">🍽️ Suất ăn</a>
             <a th:href="@{/admin/activities}" th:classappend="${activeMenu == 'activities'} ? 'active'">🎪 Hoạt động du lịch</a>
             <a th:href="@{/admin/rooms}" th:classappend="${activeMenu == 'rooms'} ? 'active'">🛏️ Phòng</a>
             <a th:href="@{/admin/bookings}" th:classappend="${activeMenu == 'bookings'} ? 'active'">📅 Đặt phòng</a>
@@ -27,7 +28,6 @@
             <a th:href="@{/admin/amenities}" th:classappend="${activeMenu == 'amenities'} ? 'active'">✨ Tiện nghi</a>
 
             <a th:href="@{/admin/promotions}" th:classappend="${activeMenu == 'promotions'} ? 'active'">🎁 Khuyến mãi</a>
-            <a th:href="@{/admin/staff}" th:classappend="${activeMenu == 'staff'} ? 'active'" sec:authorize="hasRole('SUPER_ADMIN')">👤 Nhân viên</a>
         </nav>
         <div class="sidebar-footer">
             <div sec:authentication="name">admin</div>

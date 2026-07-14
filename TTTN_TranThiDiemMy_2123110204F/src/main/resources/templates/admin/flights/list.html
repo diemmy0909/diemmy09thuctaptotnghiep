@@ -18,20 +18,29 @@
                 <th style="padding:1rem;">Hành trình</th>
                 <th style="padding:1rem;">Khởi hành</th>
                 <th style="padding:1rem;">Hạ cánh</th>
-                <th style="padding:1rem;">Giá vé</th>
-                <th style="padding:1rem;">Số ghế</th>
+                <th style="padding:1rem;">Giá vé (PT/TG)</th>
+                <th style="padding:1rem;">Số ghế (PT/TG)</th>
                 <th style="padding:1rem;">Thao tác</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="f : ${flights}" style="border-bottom:1px solid #e2e8f0;">
                 <td style="padding:1rem; font-weight:bold;" th:text="${f.airline}"></td>
-                <td style="padding:1rem; color:#64748b;" th:text="${f.flightNumber}"></td>
+                <td style="padding:1rem; color:#64748b;">
+                    <div th:text="${f.flightNumber}"></div>
+                    <div style="font-size: 0.75rem; margin-top: 4px;">
+                        <span th:if="${f.status == 'SCHEDULED'}" class="badge" style="background:#e0e7ff; color:#3730a3; padding:2px 6px; border-radius:4px;">Đang lên lịch</span>
+                        <span th:if="${f.status == 'ON_TIME'}" class="badge" style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:4px;">Đúng giờ</span>
+                        <span th:if="${f.status == 'DELAYED'}" class="badge" style="background:#fef3c7; color:#92400e; padding:2px 6px; border-radius:4px;">Bị trễ</span>
+                        <span th:if="${f.status == 'CANCELLED'}" class="badge" style="background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px;">Đã hủy</span>
+                        <span th:if="${f.status == 'COMPLETED'}" class="badge" style="background:#f3f4f6; color:#4b5563; padding:2px 6px; border-radius:4px;">Hoàn thành</span>
+                    </div>
+                </td>
                 <td style="padding:1rem;" th:text="${f.departureCity + ' ➔ ' + f.arrivalCity}"></td>
                 <td style="padding:1rem;" th:text="${#temporals.format(f.departureTime, 'dd/MM/yyyy HH:mm')}"></td>
                 <td style="padding:1rem;" th:text="${#temporals.format(f.arrivalTime, 'dd/MM/yyyy HH:mm')}"></td>
-                <td style="padding:1rem; font-weight:bold; color:#047857;" th:text="${#numbers.formatDecimal(f.price,0,'COMMA',0,'POINT')} + ' đ'"></td>
-                <td style="padding:1rem;" th:text="${f.availableSeats}"></td>
+                <td style="padding:1rem; font-weight:bold; color:#047857;" th:text="${#numbers.formatDecimal(f.price,0,'COMMA',0,'POINT')} + ' đ / ' + ${f.businessPrice != null ? #numbers.formatDecimal(f.businessPrice,0,'COMMA',0,'POINT') + ' đ' : '-'}"></td>
+                <td style="padding:1rem;" th:text="${f.availableSeats} + ' / ' + ${f.availableBusinessSeats != null ? f.availableBusinessSeats : '-'}"></td>
                 <td style="padding:1rem;">
                     <a th:href="@{/admin/flights/edit/{id}(id=${f.id})}" class="btn btn-sm btn-outline">Sửa</a>
                     <a th:href="@{/admin/flights/delete/{id}(id=${f.id})}" class="btn btn-sm btn-accent" onclick="return confirm('Bạn có chắc muốn xóa chuyến bay này?')">Xóa</a>

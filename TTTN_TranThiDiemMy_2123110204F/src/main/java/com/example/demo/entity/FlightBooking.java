@@ -31,8 +31,16 @@ public class FlightBooking {
     private Flight flight;
 
     @Column(nullable = false)
-    @Builder.Default
-    private Integer passengers = 1;
+    private Integer adults;
+
+    @Column(nullable = false)
+    private Integer children;
+
+    @Column(nullable = false)
+    private Integer infants;
+
+    @OneToMany(mappedBy = "flightBooking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<FlightPassenger> flightPassengers;
 
     @Column
     private String seatNumbers;
@@ -43,6 +51,25 @@ public class FlightBooking {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
+
+    @Column
+    private String seatClass;
+
+    @Column
+    private String mealOption;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "return_flight_id")
+    private Flight returnFlight;
+
+    @Column
+    private String returnSeatNumbers;
+
+    @Column
+    private String returnSeatClass;
+
+    @Column
+    private String returnMealOption;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default

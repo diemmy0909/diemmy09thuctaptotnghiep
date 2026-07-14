@@ -82,7 +82,7 @@
         <nav>
             <ul style="list-style:none; padding:0; margin:0; display:flex; gap:1.5rem; font-size:0.95rem; font-weight:600; color:#64748b; border-bottom: 1px solid #f1f5f9;">
                 <li><a th:href="@{/khach-san}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.hotels}">Khách sạn</a></li>
-                <li><a th:href="@{/chuyen-bay}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.flights}">Chuyến bay</a></li>
+                <li><a th:href="@{/chuyen-bay}" class="nav-link" th:classappend="${activeMenu == 'flights'} ? 'active' : ''" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.flights}">Chuyến bay</a></li>
                 <li><a th:href="@{/ve-tham-quan}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.tours}">Tour & Vé tham quan</a></li>
                 <li><a th:href="@{/hoat-dong-vui-choi}" class="nav-link" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent;" th:text="#{nav.activities}">Các Điểm Du Lịch Đáng Trải Nghiệm</a></li>
                 <li><a th:href="@{/khuyen-mai}" class="nav-link" th:classappend="${activeMenu == 'promotions'} ? 'active' : ''" style="text-decoration:none; color:inherit; padding-bottom:12px; display:inline-block; border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 0.3rem;">

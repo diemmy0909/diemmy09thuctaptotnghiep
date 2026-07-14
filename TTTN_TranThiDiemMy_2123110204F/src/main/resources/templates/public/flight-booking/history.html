@@ -42,11 +42,24 @@
                                 <td>
                                     <strong th:text="${b.flight.airline} + ' - ' + ${b.flight.flightNumber}"></strong><br>
                                     <small th:text="${b.flight.departureCity} + ' ✈️ ' + ${b.flight.arrivalCity}"></small><br>
-                                    <small style="color:#64748b;" th:text="${b.passengers} + ' hành khách'"></small>
+                                    <small style="color:#64748b;" th:text="${b.passengers} + ' hành khách'"></small><br>
+                                    <small th:if="${b.seatNumbers != null and !b.seatNumbers.isBlank()}" th:text="'Ghế (đi): ' + ${b.seatNumbers}"></small>
+                                    <small th:if="${b.mealOption != null and !b.mealOption.isBlank()}" th:text="'| Suất ăn (đi): ' + ${b.mealOption}"></small>
+                                    <th:block th:if="${b.returnFlight != null}">
+                                        <hr style="margin:4px 0; border:none; border-top:1px dashed #cbd5e1;">
+                                        <strong th:text="${b.returnFlight.airline} + ' - ' + ${b.returnFlight.flightNumber}"></strong><br>
+                                        <small th:text="${b.returnFlight.departureCity} + ' ✈️ ' + ${b.returnFlight.arrivalCity}"></small><br>
+                                        <small th:if="${b.returnSeatNumbers != null and !b.returnSeatNumbers.isBlank()}" th:text="'Ghế (về): ' + ${b.returnSeatNumbers}"></small>
+                                        <small th:if="${b.returnMealOption != null and !b.returnMealOption.isBlank()}" th:text="'| Suất ăn (về): ' + ${b.returnMealOption}"></small>
+                                    </th:block>
                                 </td>
                                 <td>
                                     <div th:text="${#temporals.format(b.flight.departureTime, 'HH:mm')}"></div>
-                                    <small style="color:#64748b;" th:text="${#temporals.format(b.flight.departureTime, 'dd/MM/yyyy')}"></small>
+                                    <small style="color:#64748b; margin-bottom:8px; display:block;" th:text="${#temporals.format(b.flight.departureTime, 'dd/MM/yyyy')}"></small>
+                                    <th:block th:if="${b.returnFlight != null}">
+                                        <div th:text="${#temporals.format(b.returnFlight.departureTime, 'HH:mm')}"></div>
+                                        <small style="color:#64748b;" th:text="${#temporals.format(b.returnFlight.departureTime, 'dd/MM/yyyy')}"></small>
+                                    </th:block>
                                 </td>
                                 <td th:text="${#numbers.formatDecimal(b.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                                 <td>

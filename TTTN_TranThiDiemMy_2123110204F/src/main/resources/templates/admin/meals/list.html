@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="admin/layout :: layout(~{::main})">
+<head>
+    <title>Quản lý Suất ăn</title>
+</head>
+<body>
+<main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2>Quản lý Suất ăn</h2>
+        <a th:href="@{/admin/meals/create}" class="btn btn-primary">Thêm suất ăn mới</a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" style="margin-bottom: 1rem;" th:text="${success}"></div>
+
+    <table class="table" style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+        <thead style="background:#f8fafc; text-align:left;">
+            <tr>
+                <th style="padding:1rem;">ID</th>
+                <th style="padding:1rem;">Tên món ăn</th>
+                <th style="padding:1rem;">Giá (VNĐ)</th>
+                <th style="padding:1rem;">Trạng thái</th>
+                <th style="padding:1rem;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="meal : ${meals}" style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:1rem;" th:text="${meal.id}"></td>
+                <td style="padding:1rem; font-weight:bold;" th:text="${meal.name}"></td>
+                <td style="padding:1rem; font-weight:bold; color:#047857;" th:text="${#numbers.formatDecimal(meal.price,0,'COMMA',0,'POINT')} + ' đ'"></td>
+                <td style="padding:1rem;">
+                    <span th:if="${meal.active}" class="badge" style="background:#dcfce7; color:#166534; padding:4px 8px; border-radius:12px; font-size:0.8rem;">Đang bán</span>
+                    <span th:unless="${meal.active}" class="badge" style="background:#fef2f2; color:#991b1b; padding:4px 8px; border-radius:12px; font-size:0.8rem;">Ngừng bán</span>
+                </td>
+                <td style="padding:1rem;">
+                    <a th:href="@{/admin/meals/edit/{id}(id=${meal.id})}" class="btn btn-sm btn-outline">Sửa</a>
+                    <a th:href="@{/admin/meals/delete/{id}(id=${meal.id})}" class="btn btn-sm btn-accent" onclick="return confirm('Bạn có chắc muốn xóa suất ăn này?')">Xóa</a>
+                </td>
+            </tr>
+            <tr th:if="${meals.isEmpty()}">
+                <td colspan="5" style="padding:2rem; text-align:center; color:#64748b;">Chưa có suất ăn nào trong hệ thống.</td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
